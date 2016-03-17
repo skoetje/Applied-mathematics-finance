@@ -1,0 +1,15 @@
+function Report(aTrades)
+    % Report the cash and position given the trades
+    
+    Date = {'12/25/11','1/2/12','1/23/12','2/7/12','2/15/12'};
+location1 = [20 5 13 0 17];
+location2 = [18 9 21 5 12];
+location3 = [26 10 16 3 15];
+
+   T = table;
+T.Date = Date';
+T.Natick = location1';
+T.Boston = location2';
+T.Worcester = location3'           
+   
+end
