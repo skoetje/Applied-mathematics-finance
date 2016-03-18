@@ -1,2 +1,4 @@
-# Applied-mathematics-finance
-In this repository we build several programs in MATLAB for trading 
+# Applying mathematics in finance
+In this repository we build several trading algorithms in Matlab.
+
+To do: file debugging in CHX.depth
