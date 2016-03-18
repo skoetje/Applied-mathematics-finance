@@ -16,14 +16,28 @@ classdef TradingRobot < AutoTrader
         end
 
         function TryArbitrage(aBot)
-            % NB These four variables contain dummy values
-            myAskPrice  = 1;
-            myBidPrice  = 100;
-            myAskVolume = 1;
-            myBidVolume = 1;
-
-            aBot.SendNewOrder(myAskPrice, myAskVolume,  1, {'AEX_AKZA'}, {'IMMEDIATE'}, 0);
-            aBot.SendNewOrder(myBidPrice, myBidVolume, -1, {'CHX_AKZA'}, {'IMMEDIATE'}, 0);
+            if isempty(aBot.AEXDepth.bidVolume)==0 && isempty(aBot.CHXDepth.askVolume)==0,
+                if aBot.AEXDepth.bidLimitPrice(1)>aBot.CHXDepth.askLimitPrice(1),
+                    myAskPrice = aBot.CHXDepth.askLimitPrice(1);
+                    myBidPrice = aBot.AEXDepth.bidLimitPrice(1);
+                    myAskVolume = min(aBot.CHXDepth.askVolume(1),aBot.AEXDepth.bidVolume(1));
+                    myBidVolume = min(aBot.AEXDepth.bidVolume(1),aBot.CHXDepth.askVolume(1));
+                    aBot.SendNewOrder(myAskPrice, myAskVolume,  1, {'CHX_AKZA'}, {'IMMEDIATE'}, 0);
+                    aBot.SendNewOrder(myBidPrice, myBidVolume, -1, {'AEX_AKZA'}, {'IMMEDIATE'}, 0);
+                    disp('Buy at CHX')
+                end
+            end
+            if isempty(aBot.AEXDepth.askVolume)==0 && isempty(aBot.CHXDepth.bidVolume)==0,
+                if aBot.CHXDepth.bidLimitPrice(1)>aBot.AEXDepth.askLimitPrice(1),
+                    myAskPrice = aBot.AEXDepth.askLimitPrice(1);
+                    myBidPrice = aBot.CHXDepth.bidLimitPrice(1);
+                    myAskVolume = min(aBot.AEXDepth.askVolume(1),aBot.CHXDepth.bidVolume(1));
+                    myBidVolume = min(aBot.CHXDepth.bidVolume(1),aBot.AEXDepth.askVolume(1));
+                    aBot.SendNewOrder(myAskPrice, myAskVolume,  1, {'AEX_AKZA'}, {'IMMEDIATE'}, 0);
+                    aBot.SendNewOrder(myBidPrice, myBidVolume, -1, {'CHX_AKZA'}, {'IMMEDIATE'}, 0);
+                    disp('Buy at AEX')
+                end
+            end
         end
     end
 end
