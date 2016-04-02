@@ -2,9 +2,9 @@ clear myExchange;
 clear myFeedPublisher;
 clear myTradingRobot;
 
-load('AKZA1.mat');
+load('CBKDBK1.mat');
 
-myExchange = CreateExchangeArb();
+myExchange = CreateExchangeCor();
 
 myFeedPublisher = FeedPublisher();
 myExchange.RegisterAutoTrader(myFeedPublisher);
@@ -14,6 +14,7 @@ myTradingRobot = TradingRobot();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
-myFeedPublisher.StartFeed(myFeed);
+myFeedPublisher.StartShortFeed(myFeed);
 
+myTradingRobot.Unwind();
 Report(myTradingRobot.ownTrades);
