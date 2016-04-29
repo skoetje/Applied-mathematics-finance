@@ -2,7 +2,7 @@ clear myExchange;
 clear myFeedPublisher;
 clear myTradingRobot;
 
-load('CBKDBK1.mat');
+load('CBKDBK2.mat');
 
 myExchange = CreateExchangeCor();
 

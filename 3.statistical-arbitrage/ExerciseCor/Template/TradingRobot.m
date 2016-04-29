@@ -172,7 +172,7 @@ classdef TradingRobot < AutoTrader
             
             % Now define some parameters for the Delta functions:
             myTotalTime=34100.; % Approximation of total time
-            myChangepoint=0.25; % Where to change functions
+            myChangepoint=0.5; % Where to change functions
             myKappa=0.25;      % Determines start delta
             myTimeDelta1st=myDelta*sin(2*pi*sum(aBot.Time)/(myTotalTime*4*myChangepoint));
             myTimeDelta2nd=myDelta*(abs(sum(aBot.Time)-myTotalTime*myChangepoint)/myTotalTime);%sin(2*pi*(sum(aBot.Time)-TotalTime/2)/(TotalTime*2));
