@@ -1,5 +1,5 @@
-classdef TradingRobotSEND < AutoTrader
-    properties
+classdef TradingRobot < AutoTrader
+    properties%Hoi ik ben Mark
         CBKDepth
         DBKDepth
         
