@@ -1,8 +1,8 @@
 # Applying mathematics in finance
 In this repository we build several trading algorithms in Matlab.  
 Profit TradingRobot with PF 1/500, TT 34100, CP 0.5  
-Feed1: ?,?,?  
-Feed2: ?,?,?  
+Feed1: 19122.06,0,16  
+Feed2: 13091.90,-615,823  
 Feed3: ?,?,?  
 Feed4: ?,?,?  
   
