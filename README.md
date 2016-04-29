@@ -8,7 +8,7 @@ Feed4: ?,?,?
   
 Profit TradingRobot with PF 1/500, TT 34100, CP 0.25  
 Feed1: 4874.29,0,51  
-Feed2: 5859.80,0,203 
+Feed2: 5859.80,0,203  
 Feed3: ?,?,?  
 Feed4: ?,?,?  
   
