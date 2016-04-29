@@ -1,4 +1,12 @@
 function theRandomWalk = randomWalk(aS, aMu, aSigma, aT)
+    % Return:
+    %  theRandomWalk : n x 1 double - one random walk of an asset value
+    % Parameters:
+    %  aS     : double - start value
+    %  aMu    : double - drift per year
+    %  aSigma : double - volatility per year
+    %  aT     : double - time until expiry in years    
+
     %Preambule.
     %vecaS is a list that gathers aS per timestep
     %vectime is a time vector, for plotting purposes
@@ -29,7 +37,7 @@ function theRandomWalk = randomWalk(aS, aMu, aSigma, aT)
     line([0,82],[11,11*exp(aMu*85)],'LineWidth',1.5,'LineStyle','--','Color','blue')
     line([0,82],[12,12],'LineWidth',1.5,'LineStyle','--','Color','black')
     xlabel('Time (days)','FontSize', 15)
-    ylabel('Asset price (€)','FontSize', 15)
+    ylabel('Asset price (ï¿½)','FontSize', 15)
     xlim([0,82])
     ylim([8.5,13.5])
     set(gca,'FontSize',13)
