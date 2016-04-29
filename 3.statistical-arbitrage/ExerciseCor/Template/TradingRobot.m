@@ -1,4 +1,4 @@
-classdef TradingRobot < AutoTrader
+classdef TradingRobotSEND < AutoTrader
     properties
         CBKDepth
         DBKDepth
