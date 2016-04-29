@@ -1,5 +1,5 @@
 classdef TradingRobot < AutoTrader
-    properties%Hoi ik ben Mark
+    properties
         CBKDepth
         DBKDepth
         
@@ -114,25 +114,25 @@ classdef TradingRobot < AutoTrader
             % Regression parameters of the form:
             % "DBK = MySlope * CBK + myCrossing"
             % Using the four different feeds
-            mySlope1=2.3969;
-            mySlope2=0.65231;
-            mySlope3=2.9922;
-            mySlope4=3.4283;
+            mySlope1=1.1831;%2.3969;
+            mySlope2=3.29;%0.65231;
+            mySlope3=1.7111;%2.9922;
+            mySlope4=2.469;%3.4283;
             
-            myCrossing1=-1.4621;
-            myCrossing2=5.2221;
-            myCrossing3=-3.7514;
-            myCrossing4=-5.3519;
+            myCrossing1=3.1135;%-1.4621;
+            myCrossing2=-5.116;%5.2221;
+            myCrossing3=1.042;%-3.7514;
+            myCrossing4=-1.9605;%-5.3519;
             
-            myR1= 0.59377;
-            myR2=0.31892;
-            myR3=0.8616;
-            myR4=0.81649;
+            myR1=0.35969;%0.59377;
+            myR2=0.79032;%0.31892;
+            myR3=0.91256;%0.8616;
+            myR4=0.84946;%0.81649;
             
-            myDelta1=0.16725;
-            myDelta2=0.13478;
-            myDelta3=0.13629;
-            myDelta4=0.15749;
+            myDelta1=0.30463;%0.16725;
+            myDelta2=0.38038;%0.13478;
+            myDelta3=0.21001;%0.13629;
+            myDelta4=0.24754;%0.15749;
             
             % Weighted average of regression parameters
             mySlope=(mySlope1*myR1+mySlope2*myR2+mySlope3*myR3+mySlope4*myR4)/(myR1+myR2+myR3+myR4);
@@ -171,8 +171,8 @@ classdef TradingRobot < AutoTrader
             end
             
             % Now define some parameters for the Delta functions:
-            myTotalTime=3417.; % Approximation of total time
-            myChangepoint=0.5; % Where to change functions
+            myTotalTime=34100.; % Approximation of total time
+            myChangepoint=0.25; % Where to change functions
             myKappa=0.25;      % Determines start delta
             myTimeDelta1st=myDelta*sin(2*pi*sum(aBot.Time)/(myTotalTime*4*myChangepoint));
             myTimeDelta2nd=myDelta*(abs(sum(aBot.Time)-myTotalTime*myChangepoint)/myTotalTime);%sin(2*pi*(sum(aBot.Time)-TotalTime/2)/(TotalTime*2));
@@ -186,10 +186,10 @@ classdef TradingRobot < AutoTrader
                 
             % ... and the second half:
             else
-                myLowDeltaCBK=myDelta-myTimeDelta2nd*(1+abs(sum(aBot.TotalCBK))/50);
-                myHighDeltaCBK=myDelta+myTimeDelta2nd*(1+abs(sum(aBot.TotalCBK))/50);
-                myLowDeltaDBK=myDelta-myTimeDelta2nd*(1+abs(sum(aBot.TotalDBK))/50);
-                myHighDeltaDBK=myDelta+myTimeDelta2nd*(1+abs(sum(aBot.TotalDBK))/50);
+                myLowDeltaCBK=myDelta-myTimeDelta2nd*(1+abs(sum(aBot.TotalCBK))/500);
+                myHighDeltaCBK=myDelta+myTimeDelta2nd*(1+abs(sum(aBot.TotalCBK))/500);
+                myLowDeltaDBK=myDelta-myTimeDelta2nd*(1+abs(sum(aBot.TotalDBK))/500);
+                myHighDeltaDBK=myDelta+myTimeDelta2nd*(1+abs(sum(aBot.TotalDBK))/500);
                 
                 % Here we check the different cases of positions
                 if sum(aBot.TotalCBK)<0,
