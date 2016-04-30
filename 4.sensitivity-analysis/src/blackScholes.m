@@ -1,12 +1,18 @@
-function Call = blackScholes(Price, Strike, Rate, Time, Volatility, Yield)
+function [Call, Put] = blackScholes(Price, Strike, Rate, Time, Volatility, Yield)
+    
+[Call, Put] = blsprice(Price, Strike, Rate, Time, Volatility, Yield);
+% disp(Call);
+% disp(Put);
 
-Call = blsprice(Price, Strike, Rate, Time, Volatility, Yield);
 
+
+
+end
 
 
 % Values for the Black Sholes as in exercise 1
 %%
-%% should return 0.0462 (and you need finacial toolbox)
+%% should return 0.0462 (and you need financial toolbox)
 % Price = 11;
 % Strike = 12;
 % Rate = 0.02;
