@@ -1,0 +1,15 @@
+function Call = blackScholes(Price, Strike, Rate, Time, Volatility, Yield)
+
+Call = blsprice(Price, Strike, Rate, Time, Volatility, Yield);
+
+
+
+% Values for the Black Sholes as in exercise 1
+%%
+should 
+% Price = 11;
+% Strike = 12;
+% Rate = 0.02;
+% Time = 82/252;
+% Volatility = 0.12;
+% Yield = 0;
