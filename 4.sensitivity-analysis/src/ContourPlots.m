@@ -6,7 +6,7 @@ yield=0;
 Strike=12;
 Start=11;
 
-%% 1D Plots
+%% 2D Plots
 ValueCall=[];
 ValuePut=[];
 muvec=[];
