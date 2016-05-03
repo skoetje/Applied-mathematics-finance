@@ -1,5 +1,8 @@
 ###To do:
 
+* Mark: sensitivity point
+* Bram: verschil met Monte Carlo
+* Riz: real life example
 
 ##different options
 
@@ -8,6 +11,6 @@ In option tradings, there is a difference between out-of-the-money and in-the-mo
 
 * Call options. Recall that call options are investments chosen by people who think the underlying stock will continue to rise. In-the-money call options are options where the strike price is lower than the current stock price.
 
-e.g. call option with strike price €50. If stock is valued at €51 it is in-the-money, because the stock has already exceeded the strike price. If the strike price would be above €51, the call option would be considered out-of-the-money.
+e.g. call option with strike price â‚¬50. If stock is valued at â‚¬51 it is in-the-money, because the stock has already exceeded the strike price. If the strike price would be above â‚¬51, the call option would be considered out-of-the-money.
 
-*Put options. With put options, investors believe the stock price will go down. In-the-money put options have strike prices above the current stock price, e.g. €12 stock with a €14 strike price. Put options with a strike price of €10 in this example are out-of-the-money.
+*Put options. With put options, investors believe the stock price will go down. In-the-money put options have strike prices above the current stock price, e.g. â‚¬12 stock with a â‚¬14 strike price. Put options with a strike price of â‚¬10 in this example are out-of-the-money.
