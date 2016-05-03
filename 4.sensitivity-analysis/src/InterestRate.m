@@ -13,7 +13,7 @@ for i=1:100,
     ValueOption(end+1)=blsprice(Start,Strike,mu,time,sigma,yield);
 end
 
-plot(ValueOption)
+plot(ValueOption,'LineWidth',3)
 %ylim([0,N/20])
 %xlim([0,4])
 xlabel('Drift','FontSize', 15)
