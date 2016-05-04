@@ -6,7 +6,7 @@ yield=0;
 Strike=12;
 Start=11;
 
-%% Plots
+%% 1D Plots
 ValueCall=[];
 ValuePut=[];
 muvec=[];
@@ -17,18 +17,26 @@ for i=1:1000,
     ValuePut(end+1)=B;
     muvec(end+1)=mu;
 end
-subplot(2,1,1)
+subplot(2,2,1)
 plot(muvec,ValueCall,'LineWidth',3)
-%ylim([0,N/20])
-%xlim([0,4])
-xlabel('Drift','FontSize', 15)
+xlabel('Drift rate per year','FontSize', 15)
 ylabel('Call Option value (€)','FontSize', 15)
 set(gca,'FontSize',13)
 
-subplot(2,1,2)
+subplot(2,2,2)
 plot(muvec,ValuePut,'LineWidth',3)
-%ylim([0,N/20])
-%xlim([0,4])
-xlabel('Drift','FontSize', 15)
+xlabel('Drift rate per year','FontSize', 15)
 ylabel('Put Option value (€)','FontSize', 15)
+set(gca,'FontSize',13)
+
+subplot(2,2,3)
+plot(muvec(2:end),diff(ValueCall),'LineWidth',3)
+xlabel('Drift rate per year','FontSize', 15)
+ylabel('Change Value Call option','FontSize', 15)
+set(gca,'FontSize',13)
+
+subplot(2,2,4)
+plot(muvec(2:end),diff(ValuePut),'LineWidth',3)
+xlabel('Drift rate per year','FontSize', 15)
+ylabel('Change Value Call option','FontSize', 15)
 set(gca,'FontSize',13)
