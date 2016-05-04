@@ -14,14 +14,14 @@ DValuePut=zeros(100,100);
 timevec=[];
 startvec=[];
 resolutionx=0.1;
-resolutiony=0.01;
+resolutiony=0.05;
 
 for i=1:100,
     time=0+i*resolutionx;
     startvec=[];
     for j=1:100,
-        start=10+j*resolutiony;
-        [A,B]=blsprice(Start,Strike,mu,time,sigma,yield);
+        start=8+j*resolutiony;
+        [A,B]=blsprice(start,Strike,mu,time,sigma,yield);
         ValueCall(i,j)=A;
         ValuePut(i,j)=B;
         startvec(end+1)=start;
