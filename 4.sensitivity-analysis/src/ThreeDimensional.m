@@ -53,7 +53,8 @@ k = a>4;
 xlim([0,1])
 ylim([0,1])
 zlim([0,1])
-    
+
+
 %% Slices
 x = timevec(1:12:25);
 [T,SCALES,X] = meshgrid(sigmavec,muvec,x);
