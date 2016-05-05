@@ -40,7 +40,6 @@ set(gca,'FontSize',13)
 subplot(2,2,3)
 hold on
 plot(Startvec(2:end),diff(ValueCall)/resolution,'LineWidth',3)
-plot(Startvec(3:end),diff(diff(ValueCall))/resolution,'LineWidth',3)
 plot([12,12],[0 1],'LineWidth',3)
 hold off
 xlabel('Starting Stock Price','FontSize', 15)
