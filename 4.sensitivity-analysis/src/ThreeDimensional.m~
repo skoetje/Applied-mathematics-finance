@@ -32,11 +32,19 @@ for i=1:Totalres,
 end
 
 %% Derivatives
-[Cx,Cy,Cz]=gradient(ValueCall,0.08,0.08,0.08);
-CallGradient=sqrt(Cx.^2+Cy.^2+Cz.^2);
+DxValueCall=zeros(100,100);
+for i=1:100,
+    A=diff(ValueCall(i,:,:));
+    B=diff(ValueCall(i,:,:));
+    for j=1:99,
+        DxValueCall(i,j)=A(j)/resolutionx;
+        DxValuePut(i,j)=B(j)/resolutionx;
+    end
+end
 
 %% Plots
 [x,y]=meshgrid(sigmavec,muvec);
+[Cx,Cy,Cz]=gradient(ValueCall,0.08,0.08,0.08);
 [a,b]=max(sqrt(Cx.^2+Cy.^2+Cz.^2),[],3);
 %[a,b]=max(ValueCall,[],3);
 for i=1:25,
@@ -52,15 +60,11 @@ k = hypot(x,y)<3;
        'Labels',{'','Volatility','Drift','Time','Option Value |Gradient'});%'Plottype','stem',
 
 %% Slices
-x = timevec(1:12:25);
+x = 1:5:25;
 [T,SCALES,X] = meshgrid(sigmavec,muvec,x);
 sigslice = []; 
 muslice = []; 
-xslice = timevec(1:12:25);
-SGRAM = CallGradient(:,:,1:12:25);
+xslice = 1:5:25;
+SGRAM = ValueCall(:,:,1:5:25);
 surfHandles = slice(T,SCALES,X,SGRAM,sigslice,muslice,xslice);
-set(surfHandles,'FaceAlpha',0.8,'EdgeAlpha',0.)
-xlabel('Volatility')
-ylabel('Drift')
-zlabel('Time')
-colorbar
+set(surfHandles,'FaceAlpha',0.8,'EdgeAlpha',0.8)
