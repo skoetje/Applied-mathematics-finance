@@ -7,16 +7,16 @@ Strike=12;
 start=11;
 
 %% Data
-Totalres=25;
+Totalres=100;
 
 ValueCall=zeros(Totalres,Totalres,Totalres);
 ValuePut=zeros(Totalres,Totalres,Totalres);
-resolutionx=0.02;
+resolutionx=0.01;
 resolutiony=0.01;
-resolutionz=0.08;
-sigmavec=linspace(resolutionx,0.5,0.5/resolutionx);
-muvec=linspace(resolutiony,0.25,0.25/resolutiony);
-timevec=linspace(resolutionz,2,2/resolutionz);
+resolutionz=0.01;
+sigmavec=linspace(resolutionx,Totalres*resolutionx,Totalres*resolutionx/resolutionx);
+muvec=linspace(resolutiony,Totalres*resolutiony,Totalres*resolutiony/resolutiony);
+timevec=linspace(resolutionz,Totalres*resolutionz,Totalres*resolutionz/resolutionz);
 
 for i=1:Totalres,
     sigma=0+i*resolutionx;
@@ -37,20 +37,23 @@ CallGradient=sqrt(Cx.^2+Cy.^2+Cz.^2);
 
 %% Plots
 [x,y]=meshgrid(sigmavec,muvec);
-[a,b]=max(sqrt(Cx.^2+Cy.^2+Cz.^2),[],3);
-%[a,b]=max(ValueCall,[],3);
-for i=1:25,
-    for j=1:25,
+%[a,b]=min(sqrt(Cx.^2+Cy.^2+Cz.^2),[],3);
+[a,b]=max(ValueCall,[],3);
+for i=1:100,
+    for j=1:100,
         b(i,j)=timevec(b(i,j));
     end
 end
 
-k = hypot(x,y)<3;
+k = a>4;
     plot3k({x(k) y(k) b(k)},                                      ...
        'FontSize',12,                           ...
        'ColorData',a(k),'Marker',{'o', 10}, ...
-       'Labels',{'','Volatility','Drift','Time','Option Value |Gradient'});%'Plottype','stem',
-
+       'Labels',{'','Volatility','Drift','Time','Option Value Gradient'});%'Plottype','stem',
+xlim([0,1])
+ylim([0,1])
+zlim([0,1])
+    
 %% Slices
 x = timevec(1:12:25);
 [T,SCALES,X] = meshgrid(sigmavec,muvec,x);
