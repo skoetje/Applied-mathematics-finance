@@ -32,15 +32,6 @@ function thePrice = putPrice(aS, aMu, aSigma, aE, aT, N)
         Valuevec=[Valuevec value];
     end
     
-    %Some code for the histogram
-    simvec=[1:N];
-    disp(Valuevec);
-    histfit(Valuevec,100)
-    ylim([0,N/20])
-    xlim([0,4])
-    xlabel('Option value (€)','FontSize', 15)
-    ylabel('Frequency','FontSize', 15)
     thePrice = mean(Valuevec);
-    set(gca,'FontSize',13)
    % toc
 end

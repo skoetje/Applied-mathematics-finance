@@ -24,7 +24,7 @@ sigmavec=[];
 resolutionVol=0.01;
 for i=1:200,
     sigma=0+i*resolutionVol;
-    [A,B]=mcPricer(N,trials,aS,aMu,aSigmaVol,aE,aTVol);
+    [A,B]=mcPricer(N,trials,aS,aMu,sigma,aE,aTVol);
     ValueCallVol(end+1)=A;
     ValuePutVol(end+1)=B;
     sigmavec(end+1)=sigma;
@@ -75,7 +75,7 @@ resolutionTime=0.005;
 
 for j=1:400,
     time=0+j*resolutionTime;
-    [X,Y]=mcPricer(N,trials,aS,aMu,aSigmaTime,aE,aTTime);
+    [X,Y]=mcPricer(N,trials,aS,aMu,aSigmaTime,aE,time);
     ValueCallTime(end+1)=X;
     ValuePutTime(end+1)=Y;
     timevec(end+1)=time;
