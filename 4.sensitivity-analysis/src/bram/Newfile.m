@@ -1,5 +1,6 @@
 %% Preambule
-N = 3;
+clear all
+N = 30;
 trials = 1;
 yield=0;
 exercise=12;
@@ -63,8 +64,8 @@ time=82;
 ValueCallTime=[];
 ValuePutTime=[];
 timevec=[];
-resolutionTime=0.05;
-for i=1:20,
+resolutionTime=40;
+for i=0:20,
     time=0+i*resolutionTime;
     [A,B]=mcPricer(N,trials,start,drift,sigma,exercise,time);
     ValueCallTime(end+1)=A;
