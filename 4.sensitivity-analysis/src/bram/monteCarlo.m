@@ -1,5 +1,9 @@
-tic;
-N = 10000;
+%% DEZE RUNT HEM ALS EEN SCRIPT
+% Deze kan je gebruiken om de gemiddelden te meten adhv het 
+% aantal trials en samples (n). De bovenste twee kun je dus
+% aanpassen om te experimenteren. Voor de sensitivity heb
+% ik de functie mcPricer gebruikt.
+N = 100;
 trials = 30;
 aS = 11;
 aE = 12;
@@ -7,9 +11,10 @@ aMu = 0.02;
 aT = 82;
 aSigma = 0.2;
 
+ %[aaaBSCALL, aaaBSPUT] = blsprice(aS, aE, aMu, aT/252, aSigma, 0);
 
-callValue = callPrice(aS,aMu,aSigma,aE,aT,N);
-putValue = putPrice(aS,aMu,aSigma,aE,aT,N);
+%callValue = callPrice(aS,aMu,aSigma,aE,aT,N);
+%putValue = putPrice(aS,aMu,aSigma,aE,aT,N);
 
 callVec = [];
 putVec = [];
@@ -26,7 +31,6 @@ aaastdCall = std(callVec);
 aagemPut = mean(putVec);
 aastdPut = std(putVec);
 
-toc;
 
 % %Same input as ass.1
 % N = 10000;
