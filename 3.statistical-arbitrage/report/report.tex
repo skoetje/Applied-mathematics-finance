@@ -1,0 +1,190 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{subfig}
+\textheight=675pt
+\textwidth=480pt
+\voffset=-30pt
+\hoffset=-65pt
+\title{Assignment 3: Statistical Arbitrage}
+
+\author{M.M. Dekker\\
+\and 
+R. Erdem\\
+\and
+B.E. Zijlstra\\}
+
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+In this assignment we will arbitrage between two stocks: Commerzbank (\texttt{CBK\_EUR}) and Deutsche Bank (\texttt{DBK\_EUR}). Both Commerzbank (CBK) and Deutsche Bank (DBK) are listed on the Frankfurt Stock Exchange, so we hypothesize there is a correlation between both stocks. Finding a significant correlation can give important information about the behavior of these stocks. When these two stocks do not behave in this way, we can assume this is a temporary mispricing. Accordingly, this temporary mispricing can be used to make money by selling the assumed overpriced stock and buy the temporary underpriced stock. Since statistical arbitrage (SA) is not deterministic like dual listing arbitrage, implementing the correct analysis and trading parameters are very important. 
+
+\section{Methods}
+
+\subsection{Analysis of the feeds}
+In order to perform SA, we need to implement statistical methods to quantify the behavior of CBK and DBK. For this we use the \texttt{AnalysisRobot}, which is a class with two methods: \texttt{HandleDepthUpdate} and \texttt{PlotMarket}, with the use of the function \texttt{Valuate}.
+
+\subsubsection{HandleDepthUpdate}
+In the \texttt{HandleDepthUpdate} function, the robot searches for the best bids and offers. This is obviously done for all feeds. These best bid and best offer prices give an indication of what the best (lowest) possible price is for which you can acquire a share, and of what the best (highest) possible price is for which you can sell a share. With this information we can compute a valuation function. How exactly, is described in the next section Valuate.
+
+\subsubsection{Valuate}
+For the \texttt{Valuate} function, the mere average between the bid- and askprice is a naive valuation. We think taking volumes into account is needed. For example, when a lot of assets are bid for in the market (i.e. the bid volume is high), we can expect that the price of this stock will rise as well. In general, the lower the highest layer of a book in volume, the more the actual value of the stock will be attracted to this (bid or ask). To implement this, the valuation function will do the following operation:
+
+\begin{eqnarray}
+\texttt{Value}=\frac{1}{2}(\frac{\texttt{aBid}}{\texttt{aAsk}+\texttt{aBid}}\cdot \texttt{aAskp}+\frac{\texttt{aAsk}}{\texttt{aAsk}+\texttt{aBid}}\cdot \texttt{aBidp})
+\end{eqnarray}
+
+With \texttt{aBid} and \texttt{aAsk} the bid and ask volumes, and \texttt{aBidp} and \texttt{aAskp} the bid and ask prices of the stock at the first layer of the book at the time at which we want to know the value of the stock. There is factor $\frac{1}{2}$ added, which means that the value that is gained is not an actual \textit{price}. To calculate the actual fair price, multiply by two again. Using this, the actual value of a stock can be analyzed and used to determine mispricing.
+
+\subsubsection{PlotMarket}
+Another method in the \texttt{AnalysisRobot} is the \texttt{PlotMarket}. This function analyzes the best bids and offers per share (which are stored in properties like \texttt{myTradingRobot.BestOffersDBK} by the \texttt{HandleDepthUpdate} in the \texttt{AnalysisRobot}). Using the \texttt{Valuate} function, the exact evolution of the values of the two stocks are gained. Between these two lines, a correlation and linear regression function is made.
+
+Lastly, in order to actually view the concepts mentioned above, for each feed there are four plots are made. In figure 1 til 4, four plots of analysis of the first feed (CBKDBK1) are shown. Figure 1 shows the best bids and offers, along with the stock valuation of the DBK share. Figure 2 shows the best bids and offers, along with the stock valuation of the CBK share. Figure 3 shows both stock valuations of the DBK and CBK shares. It also shows the correlation between these two stock valuations (in the upper left corner). Figure 4 shows the regression and its 95 \% percent confidence intervals, along with the valuation for the DBK share.
+
+\begin{figure}[h!]
+\centering
+\subfloat[DBK best bids/offers]{\includegraphics[width=0.5\textwidth]{figure1001.png}}
+\subfloat[CBK best bids/offers]{\includegraphics[width=0.5\textwidth]{figure2002.png}}\\
+\subfloat[Stock valuations]{\includegraphics[width=0.5\textwidth]{figure3003.png}}
+\subfloat[Regression with 95\% confidence interval]{\includegraphics[width=0.5\textwidth]{figure4004.png}}
+\caption{\label{fig:plot1} Various figures showing results of the regression and valuation for feed 1.}
+\end{figure}
+
+\subsection{The $\Delta$ parameter - significance and confidence intervals}
+\subsubsection{Idea of the $\Delta$ parameter}
+It is important to note that the (average) correlation between the two valuation functions is still relatively uncertain. In the results section (Tab. \ref{tab:corpar}), the correlation coefficients are shown, and it is visible that they are not always close to one. This should be reflected back in our analysis, to ensure that we only trade stocks of which we are quite certain that they are mispriced. This is where our $\Delta$ comes in. $\Delta$ is a value that acts like a confidence interval around the regression between the two valuated stock functions. We define the stocks to be mispriced if the price of, say, the stock of DBK exceeds the value what we would predict using the regression and the value of CBK \textit{plus} $\Delta$ (or if the stock becomes lower than the regression \textit{minus} $\Delta$). In terms of equations:
+\begin{eqnarray*}
+\texttt{DBK\_value}&>&a\cdot \texttt{CBK\_value}+b+\Delta\text{, or:}\\
+\texttt{DBK\_value}&<&a\cdot \texttt{CBK\_value}+b-\Delta
+\end{eqnarray*}
+where $a$ and $b$ are gained from the regressions we got using the \texttt{AnalysisRobot} (as earlier described). A first approximation of $\Delta$ would be to take the 95\% confidence interval, calculated from the regressions itself (using \texttt{polyfit()} in Matlab). However, $\Delta$ should not be a constant. In the end of the feed, we do not want to have any position, because that will be corrected using very bad prices. There are two considerations concerning this to take into account using a variable $\Delta$. One of these is that in the first part of the feed, we do not have to be too picky on which trades we want to choose: we can afford to buy more assets for less profit per asset because the amount of assets does not matter yet. This, however, changes in the second part of the feed, where we should be more careful with buying assets. This results in a time dependence of $\Delta$:
+\begin{eqnarray}
+\Delta = \Delta_0\cdot f(t)
+\end{eqnarray}
+with $\Delta_0$ (\texttt{myDelta} in Matlab) marks the $\delta$-parameter of the 95\% confidence intervals, and $f(t)$ a function of time to be determined. The second consideration concerning the zero-position problem is that in the end of the feed, we want to be less picky (low $\Delta$) with trades that make us lose position, while we should be very picky (high $\Delta$) with trades that create additional position. This creates a position dependence of $\Delta$:
+\begin{eqnarray}
+\Delta = \Delta_0\cdot f(t)\cdot g(Q)
+\end{eqnarray}
+with $g(Q)$ a function of position $Q$ to be determined.
+
+\subsubsection{Quantification of the $\Delta$}
+The goal now is to determine the function $f(t)$ and $g(Q)$. First, it is important to note that $f(t)$ is not really dependent on time, but on the fraction of time with respect to the total amount of time. Therefore, we created a property \texttt{Time}, which creates an additional element (all equal to \texttt{1}) each time the \texttt{TryArbitrage} is called. This way, from earlier runs we could see that the total amount of time was about 3417 (i.e. this number is not gained while the \texttt{TradingRobot} is running, so we had to specify this explicitly). The next step is to make a distinction between the first half of the feed, and the second half. In the early half, the position $Q$ should not play a major role because in this period, we want the robot to trade with maximum profits: we have enough time to reduce our profits in the later half. This means that in the first half, we set $g(Q)=1$. Now, to start with a $\Delta>0$ at $t=0$ and to gradually increase this value to $\Delta_0$, we use the following function for $\Delta$ (in the first half of the feed, unto $t=\frac{3417}{2}\approx 1708$):
+\begin{eqnarray*}
+\Delta = 0.25\cdot\Delta_0+0.75\cdot\Delta_0\cdot\sin(\frac{\pi}{3417}t)\text{ for t $<$ 1708}
+\end{eqnarray*}
+To be clear: only a quarter sine will be present in this part of the feed, so this time dependence will make it gradually approach $\Delta_0$. Now, the second half of the feed should contain a $g(Q)\neq 0$. Also, from now on we need to make a distinction between cases of trades that potentially attribute to our position (e.g. selling when you already have a negative position) and cases of trades that potentially reduce our position (e.g. selling when you have a positive position). In the first case, your $\Delta$ should be higher, because the negative effect of having extra position will likely be stronger than the positive effect of making an extra good-regression based trade. In the second case, \textit{vice versa}: we need a lower $\Delta$ to get rid of position more easily. This means we need to make a distinction between which $\Delta$ to use; one that is extra high ($\Delta_h$), and one that is extra low ($\Delta_l$):
+\begin{eqnarray*}
+\Delta_h = \Delta_0+\Delta_0\cdot (1+\frac{|t-\frac{3417}{2}|}{3417})(1+\frac{|Q|}{50})\text{ for t $\geq$ 1708, $sgn(Q_t)=sgn(Q)$}\\
+\Delta_l = \Delta_0-\Delta_0\cdot (1+\frac{|t-\frac{3417}{2}|}{3417})(1+\frac{|Q|}{50})\text{ for t $\geq$ 1708, $sgn(Q_t)\neq sgn(Q)$}
+\end{eqnarray*}
+for $Q_t$ the volume of the specific trade ($<0$ when selling, $>0$ when buying). As can be seen, both the function start with $\Delta_0$ and diverge from that on. The more time has passed (approaching the end of the feed, $t=3417$) and the higher the position is, the further the $\Delta_l$ and $\Delta_h$ come from $\Delta$.
+
+\subsubsection{Implementation of $\Delta$}
+After calculating $\Delta_0$ (described above), the $\Delta$ values per stock per kind of trade (sell/buy) are defined (e.g. called \texttt{myLowDeltaCBK}). After this, four \texttt{if}-loops check whether to define sell-trades as $\Delta_l$ or $\Delta_h$ and the same with buy-trades (e.g. called \texttt{myDeltaBuyCBK}). Of course, only one of these per stock be needed (if there is \"uberhaupt a viable trade), but for clarity purposes all are defined. These new $\Delta$'s are used in the core of the trading robot where it determines whether lines are empty or not, calculates the valuations and makes the trades.
+
+\section{Results}
+
+In order to run the \texttt{TradingRobot} on the test feeds, first the \texttt{AnalysisRobot} needs to calculate the variables mentioned in 2.1.These findings are presented in Tab. \ref{tab:corpar}. 
+
+\begin{table}[h!]
+\centering
+\caption{Results Analysis Robot}
+\label{tab:corpar}
+\begin{tabular}{lllll}
+                 & \textbf{Correlation} & \textbf{Delta} & \textbf{Slope} & \textbf{Crossing} \\
+                 \hline
+\textbf{CBKDBK1} & 0.59377              & 0.16725        & 2.3960         & -1.4621           \\
+\textbf{CBKDBK2} & 0.31892              & 0.13478        & 0.65321        & 5.2221            \\
+\textbf{CBKDBK3} & 0.8616               & 0.13629        & 2.9922         & -3.7514           \\
+\textbf{CBKDBK4} & 0.81649              & 0.15749        & 3.4283         & -5.3519\\          \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[tbp]
+\centering
+\caption{Results TradingRobot}
+\label{
+1}
+\begin{tabular}{llll}
+\hline
+\textbf{}        & \textbf{Cash} & \textbf{CBK} & \textbf{DBK} \\
+\hline
+\textbf{CBKDBK1} & 220.42        & 19           & 0            \\
+\textbf{CBKDBK2} & 989.94        & 0            & 0            \\
+\textbf{CBKDBK3} & 222.42        & 0            & -15          \\
+\textbf{CBKDBK4} & 819.37        & 0            & 0            \\
+\hline
+\textbf{Total}   & 2252.15       & 19           & -15          \\
+\hline
+\end{tabular}
+\end{table}
+
+Table 2 shows the profit of \texttt{TradingRobot} on each feed. Each feed has a net positive cash, except in feed 3 we have to buy back 15 DBK stocks which will result in a very small loss. Apart from a small loss, the \texttt{TradingRobot} shows to be robust otherwise. Since some of the assumptions that were made about the parameters were a little bit arbitrarily, lots of runs were tried among the test feeds to measure differences between these values. 
+
+In table 3 we measured the amount of assets that were traded in each test feed. An important note here is the fact that \texttt{CBKDBK3} has a significant amount of fewer trades and \texttt{CBKDBK2} has the largest amount of trades. This is good news for our robot, as it shows that the performance of the robot becomes less volatile after more trades.
+
+\begin{table}[tbp]
+\centering
+\caption{Traded assets}
+\label{my-label2}
+\begin{tabular}{lllll}
+\hline
+                 & \textbf{CBK} & \textbf{DBK} & \textbf{Average CBK} & \textbf{Average DBK} \\
+\hline                 
+\textbf{CBKDBK1} & 5160         & 3752         & 47,34                & 39,91                \\
+\textbf{CBKDBK2} & 12610        & 13783        & 42,75                & 42,94                \\
+\textbf{CBKDBK3} & 1808         & 2005         & 46,36                & 48,90                \\
+\textbf{CBKDBK4} & 3555         & 2970         & 50,07                & 38,57      \\         
+\hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[tbp]
+\centering
+\caption{Sample size performance for Monte Carlo simulation}
+\label{my-label13}
+\begin{tabular}{lllll}
+\hline
+  		& \textbf{N} & \textbf{$\mu$ call} & \textbf{$\sigma$ call} & \textbf{Average DBK} \\
+\hline                 
+\textbf{CBKDBK1} & 5160         & 3752         & 47,34                & 39,91                \\
+\textbf{CBKDBK2} & 12610        & 13783        & 42,75                & 42,94                \\
+\textbf{CBKDBK3} & 1808         & 2005         & 46,36                & 48,90                \\
+\textbf{CBKDBK4} & 3555         & 2970         & 50,07                & 38,57      \\         
+\hline
+\end{tabular}
+\end{table}
+
+\section{Discussion and Reflection}
+We are making a net profit, which is a lot better than a few of the alternative methods we mention below. The correlations and profits per feed differ quite strongly. It is interesting, though expecting, to see that in the feed where the valuation functions have the lowest correlations (feed 2; $r\approx 0.32$), the profit is highest.
+
+\subsection{Optimization possibilities}
+There are a number of possibilities where one can tune this way of trading to optimize profit. First, we could have chosen the boundary between the two parts (the first is independent of position, the second dependent) to be at another position than exactly in the middle of the feed. For example, if you know that in general there are more asset volumes in the books, one can afford to neglect position for a longer time than just the first half.
+
+\subsection{Pros, Cons and Alternative methods}
+It is helpful to reflect on the various consequences of our method. There are some notes to be given, however:
+\begin{itemize}
+  \setlength\itemsep{-0.3em}
+\item An advantage of our method is that it directly uses the regressions gained from the example feeds and also weights the different parameters using the correlation coefficients of each specific feed. This way, low correlations are weighted weaker than others. However, this approach assumes a correlation between \texttt{CBK\_EUR} and \texttt{DBK\_EUR}, which in reality is not always the case.
+\item An advantage of using the $\Delta$ function is that it takes into account the balance between wanting to lose position in the end and taking risk to have a chance on profit. The different factors can be quantified very sharply and tuned in various ways. This is also directly a disadvantage. Straying too far off regular linear equations to quantify $f(t)$ and $g(t)$ can become rather ambiguous. It also becomes a rather slow process with probably high uncertainty to quantify specific parameters inside these functions, for example the denominator in the quotient that determines the influence of $|Q|$ (which is now 50).
+\item A disadvantage of the use of these \texttt{myHighDeltaCBK}-like variables is that it is very discrete. If there is a negative position, the $\Delta$ for selling becomes enormous, while one time step ago we had a positive position and the $\Delta$ for the exact same trade would have been much lower. Of course this is only the case for higher positions and later in the feed, but still this is something that could have been programmed to be more elegant.
+\end{itemize}
+
+An obvious alternative method would have been to leave $\Delta$ constant, or even out of the game. However, this would have lead to very high positions in the end of the feed, or very low profit. 
+
+\section{Conclusions}
+
+The findings of our robots show that there is indeed high correlations between the valuation functions as we hypothesized. When assessing a price of the stocks at each certain time that matches the market price, we see that the behavior of DBK and CBK stocks are similar. In the long run, using this knowledge should result in profit when it is implemented correctly. After using our  \texttt{TradingRobot} on four test feeds, we are confident that our robot is implemented in a logically way that is tested empirically.  
+
+\end{document}
