@@ -4,7 +4,7 @@ sigma=0.2;
 time=82/252;
 yield=0;
 Strike=12;
-Start=11;
+Start=20;
 
 %% 1D Plots
 ValueCall=[];
