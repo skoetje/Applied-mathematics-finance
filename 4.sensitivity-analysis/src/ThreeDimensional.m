@@ -36,23 +36,23 @@ end
 CallGradient=sqrt(Cx.^2+Cy.^2+Cz.^2);
 
 %% Plots
-[x,y]=meshgrid(sigmavec,muvec);
+[x,y]=meshgrid(sigmavec(1:50),muvec(1:50));
 %[a,b]=min(sqrt(Cx.^2+Cy.^2+Cz.^2),[],3);
-[a,b]=max(ValueCall,[],3);
-for i=1:100,
-    for j=1:100,
+[a,b]=max(CallGradient(1:50,1:50),[],3);
+for i=1:50,
+    for j=1:50,
         b(i,j)=timevec(b(i,j));
     end
 end
 
-k = a>4;
+k = a>0.5;
     plot3k({x(k) y(k) b(k)},                                      ...
        'FontSize',12,                           ...
        'ColorData',a(k),'Marker',{'o', 10}, ...
        'Labels',{'','Volatility','Drift','Time','Option Value Gradient'});%'Plottype','stem',
-xlim([0,1])
-ylim([0,1])
-zlim([0,1])
+xlim([0,0.5])
+ylim([0,0.5])
+zlim([0,0.5])
 
 
 %% Slices

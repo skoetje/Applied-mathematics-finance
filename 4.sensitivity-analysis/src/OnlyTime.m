@@ -4,7 +4,11 @@ sigma=0.2;
 time=82/252;
 yield=0;
 Strike=12;
+<<<<<<< HEAD
+Start=15;
+=======
 Start=12;
+>>>>>>> 5a95dfe4245e665e55e3c0f49b4875918d150d67
 
 %% 1D Plots
 ValueCall=[];
