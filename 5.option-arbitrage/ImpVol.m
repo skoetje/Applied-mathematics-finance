@@ -1,22 +1,26 @@
 function [volatility] = ImpVol(spotVec,strikeVec,expVec,optionVec,booleVec)
 %Given certain vectors this function retunrs the implied volatility
 
-sigmaVec=zeros(length(spotVec),1);
-looplength = length(spotVec);
-for i=1:looplength,
-    sigma=0.2;
-    while value-optionVec(i)>0.01,
-        [call, put] = blsprice(spotVec(i),strikeVec(i),0,expVec(i),sigma,0)
-        if booleVec(i)==1,
-            value=call
-        else
-            value=put
+    sigmaVec=zeros(length(spotVec),1);
+    looplength = length(spotVec);
+    for i=1:looplength,
+        sigma=0.2;
+        spot=spotVec(i);
+        strike=strikeVec(i);
+        expiry=expVec(i);
+        boolean=booleVec(i);
+        optionv=optionVec(i);
+        value=100;
+        while value-optionVec(i)>0.01,
+            [call, put] = blsprice(spot,strike,0,expiry,sigma,0);
+            if boolean==1,
+                value=call;
+            else
+                value=put;
+            end
+            sigma=sigma+(optionv-value)/blsvega(spot,strike,0,expiry,sigma,0);
         end
-        sigma=sigma+(optionVec(i)-value)/blsvega(spotVec(i),strikeVec(i),0,expVec(i),sigma,0)
+        sigmaVec(i)=sigma;    
     end
-    sigmaVec(i)=sigma;    
-
+    volatility=sigmaVec;
 end
-volatility=sigmaVec;
-end
-
