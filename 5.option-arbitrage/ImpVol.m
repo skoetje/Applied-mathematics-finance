@@ -3,18 +3,18 @@ function [volatility] = ImpVol(spotVec,strikeVec,expVec,optionVec,booleVec)
 
 sigmaVec=zeros(length(spotVec),1);
 looplength = length(spotVec);
-for i=1:looplength,
+for j=1:looplength,
     sigma=0.2;
-    while value-optionVec(i)>0.01,
-        [call, put] = blsprice(spotVec(i),strikeVec(i),0,expVec(i),sigma,0)
-        if booleVec(i)==1,
+    while value-optionVec(j)>0.01,
+        [call, put] = blsprice(spotVec(j),strikeVec(j),0,expVec(j),sigma,0)
+        if booleVec(j)==1,
             value=call
         else
             value=put
         end
-        sigma=sigma+(optionVec(i)-value)/blsvega(spotVec(i),strikeVec(i),0,expVec(i),sigma,0)
+        sigma=sigma+(optionVec(j)-value)/blsvega(spotVec(j),strikeVec(j),0,expVec(j),sigma,0)
     end
-    sigmaVec(i)=sigma;    
+    sigmaVec(j)=sigma;    
 
 end
 volatility=sigmaVec;
