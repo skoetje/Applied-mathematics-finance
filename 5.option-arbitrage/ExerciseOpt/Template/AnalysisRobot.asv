@@ -9,10 +9,15 @@ classdef AnalysisRobot < AutoTrader
         StockBidVol
         StockBidPrice
         
-        OptionOfferVol
-        OptionOfferPrice
-        OptionBidVol
-        OptionBidPrice
+        CallOptionOfferVol
+        CallOptionOfferPrice
+        CallOptionBidVol
+        CallOptionBidPrice
+        
+        PutOptionOfferVol
+        PutOptionOfferPrice
+        PutOptionBidVol
+        PutOptionBidPrice
     end
 
     methods
@@ -21,8 +26,10 @@ classdef AnalysisRobot < AutoTrader
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
                 case 'ING'; aBot.StockDepth = aDepth;
+                case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
+                case 'ING20160916PUT1400'; aBot.Call
                 otherwise; 
-                    if sum(aDepth.ISIN(12:14)=='PUT')==3,
+                    if sum(aDepth.ISIN(12:18)=='PUT1400')==7,
                         aBot.PutOptionDepth = aDepth;
                     else
                         aBot.CallOptionDepth = aDepth;
@@ -86,15 +93,15 @@ classdef AnalysisRobot < AutoTrader
             aBot.StockBidVol(end+1)=myStockBidVol;
             aBot.StockBidPrice(end+1)=myStockBidPrice;
             
-            aBot.OptionOfferVol(end+1)=myOptionOfferVol;
-            aBot.OptionOfferPrice(end+1)=myOptionOfferPrice;
-            aBot.OptionBidVol(end+1)=myOptionBidVol;
-            aBot.OptionBidPrice(end+1)=myOptionBidPrice;
+            aBot.CallOptionOfferVol(end+1)=myCallOptionOfferVol;
+            aBot.CallOptionOfferPrice(end+1)=myCallOptionOfferPrice;
+            aBot.CallOptionBidVol(end+1)=myCallOptionBidVol;
+            aBot.CallOptionBidPrice(end+1)=myCallOptionBidPrice;
             
-            aBot.OptionOfferVol(end+1)=myOptionOfferVol;
-            aBot.OptionOfferPrice(end+1)=myOptionOfferPrice;
-            aBot.OptionBidVol(end+1)=myOptionBidVol;
-            aBot.OptionBidPrice(end+1)=myOptionBidPrice;
+            aBot.PutOptionOfferVol(end+1)=myPutOptionOfferVol;
+            aBot.PutOptionOfferPrice(end+1)=myPutOptionOfferPrice;
+            aBot.PutOptionBidVol(end+1)=myPutOptionBidVol;
+            aBot.PutOptionBidPrice(end+1)=myPutOptionBidPrice;
         end
     end
 end
