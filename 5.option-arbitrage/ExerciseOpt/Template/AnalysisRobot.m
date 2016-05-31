@@ -1,8 +1,10 @@
 classdef AnalysisRobot < AutoTrader
     properties
         StockDepth
-        CallOptionDepth
-        PutOptionDepth
+        Call1400Depth
+        Put1400Depth
+        Call1000Depth
+        Put1000Depth
         
         StockOfferVol
         StockOfferPrice
@@ -26,17 +28,23 @@ classdef AnalysisRobot < AutoTrader
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
                 case 'ING'; aBot.StockDepth = aDepth;
-                otherwise; 
-                    if sum(aDepth.ISIN(12:14)=='PUT')==3,
-                        aBot.PutOptionDepth = aDepth;
-                    else
-                        aBot.CallOptionDepth = aDepth;
-                    end
+                case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
+                case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
+                case 'ING20160916PUT1000'; aBot.Put1000Depth = aDepth;
+                case 'ING20160916CALL1000'; aBot.Call1000Depth = aDepth;
+%                 otherwise; 
+%                     if sum(aDepth.ISIN(12:18)=='PUT1400')==7,
+%                         aBot.PutOptionDepth = aDepth;
+%                     else
+%                         aBot.CallOptionDepth = aDepth;
+%                     end
             end
             
             myStock=aBot.StockDepth;
-            myCallOption=aBot.CallOptionDepth;
-            myPutOption=aBot.PutOptionDepth;
+            myCallOption=aBot.Call1400Depth;
+            myPutOption=aBot.Put1400Depth;
+            myCallOption=aBot.Call1000Depth;
+            myPutOption=aBot.Put1000Depth;
             
             %Calculate current depth
             myStockOfferVol=NaN;
