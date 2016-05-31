@@ -1,0 +1,38 @@
+classdef AnalysisRobot < AutoTrader
+    properties
+        
+        
+        StockOfferVol
+        StockOfferPrice
+        StockBidVol
+        StockBidPrice
+        
+        OptionOfferVol
+        OptionOfferPrice
+        OptionBidVol
+        OptionBidPrice
+    end
+
+    methods
+        function HandleDepthUpdate(aBot, ~, aDepth)
+            %Switch between whether the depth concerns option or stock
+            switch aDepth.ISIN
+                case 'ING'; aBot.StockDepth = aDepth;
+                otherwise; aBot.OptionDepth = aDepth;
+            end
+            
+            myStock=
+            
+            %Record offer/bid prices and volumes
+            StockOfferVol(end+1)=aDepth.askVolume(1);
+            StockOfferPrice(end+1)=aDepth.askLimitPrice(1);
+            StockBidVol(end+1)=aDepth.bidVolume(1);
+            StockBidPrice(end+1)=aDepth.bidLimitPrice(1);
+            
+            OptionOfferVol(end+1)=aDepth.askVolume(1);
+            OptionOfferPrice(end+1)=aDepth.askLimitPrice(1);
+            OptionBidVol(end+1)=aDepth.bidVolume(1);
+            OptionBidPrice(end+1)=aDepth.bidLimitPrice(1);
+        end
+    end
+end
