@@ -1,5 +1,6 @@
-classdef AnalysisRobot < AutoTrader
+classdef AnalysisRobot_Strike800 < AutoTrader
     properties
+        Time
         StockDepth
         
         Call800Depth
@@ -30,11 +31,13 @@ classdef AnalysisRobot < AutoTrader
         StockBidPrice
         
         Call800Struct
-        Call900Struct
+        Put800Struct
     end
 
     methods
         function HandleDepthUpdate(aBot, ~, aDepth)
+            aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+1;
+            TimePoint=aBot.Time(end);
             
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
@@ -84,36 +87,43 @@ classdef AnalysisRobot < AutoTrader
             aBot.StockBidVol(end+1)=myStockBidVol;
             aBot.StockBidPrice(end+1)=myStockBidPrice;
             
-            %Now onto the option recording
-            myCallOptionVector=[aBot.Call800Depth,aBot.Call900Depth];
-            myOptionStructs=[aBot.Call800Struct,aBot.Call900Struct];
-            
-            for i=1:length(myCallOptionVector),
-                myOption=myCallOptionVector(i);
+            %Now onto the option recording            
+            for i=1:2,
+                if i==1,
+                    myOption=aBot.Call800Depth;
+                elseif i==2,
+                    myOption=aBot.Put800Depth;
+                end
 
                 %Calculate current depth
-                myCallOptionOfferVol=NaN;
-                myCallOptionOfferPrice=NaN;
-                myCallOptionBidVol=NaN;
-                myCallOptionBidPrice=NaN;          
+                myOptionOfferVol=NaN;
+                myOptionOfferPrice=NaN;
+                myOptionBidVol=NaN;
+                myOptionBidPrice=NaN;          
 
                 if (isempty(myOption)==0),
                     if (isempty(myOption.askLimitPrice)==0),
-                        myCallOptionOfferPrice=myOption.askLimitPrice(1);
-                        myCallOptionOfferVol=myOption.askVolume(1);
+                        myOptionOfferPrice=myOption.askLimitPrice(1);
+                        myOptionOfferVol=myOption.askVolume(1);
                     end
                     if (isempty(myOption.bidLimitPrice)==0),
-                        myCallOptionBidPrice=myOption.bidLimitPrice(1);
-                        myCallOptionBidVol=myOption.bidVolume(1);
+                        myOptionBidPrice=myOption.bidLimitPrice(1);
+                        myOptionBidVol=myOption.bidVolume(1);
                     end
                 end
                
                 %Record offer/bid prices and volumes
-                if length(myOptionStructs(i).OfferVol)
-                myOptionStructs(i).OfferVol(end+1)=myCallOptionOfferVol;
-                myOptionStructs(i).OfferPrice(end+1)=myCallOptionOfferPrice;
-                myOptionStructs(i).BidVol(end+1)=myCallOptionBidVol;
-                myOptionStructs(i).BidPrice(end+1)=myCallOptionBidPrice;
+                if i==1,
+                    aBot.Call800Struct(TimePoint,1)=myOptionOfferVol;
+                    aBot.Call800Struct(TimePoint,2)=myOptionOfferPrice;
+                    aBot.Call800Struct(TimePoint,3)=myOptionBidVol;
+                    aBot.Call800Struct(TimePoint,4)=myOptionBidPrice;
+                elseif i==2,
+                    aBot.Put800Struct(TimePoint,1)=myOptionOfferVol;
+                    aBot.Put800Struct(TimePoint,2)=myOptionOfferPrice;
+                    aBot.Put800Struct(TimePoint,3)=myOptionBidVol;
+                    aBot.Put800Struct(TimePoint,4)=myOptionBidPrice;                    
+                end
             end
         end
     end
