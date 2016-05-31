@@ -1,0 +1,22 @@
+%% Preambule
+Timevec=1:length(myTradingRobot.StockOfferPrice);
+
+%% Plot Ask/Bid stockprices
+hold on
+plot(Timevec,myTradingRobot.StockOfferPrice,'-','Color','blue','LineWidth',3)
+plot(Timevec,myTradingRobot.StockBidPrice,'-','Color','red','LineWidth',15)
+hold off
+xlabel('Time','FontSize',15)
+ylabel('Price of Stock','FontSize',15)
+
+%% Plot Ask/Bid stockvolumes
+
+%% Plot Ask/Bid optionprices
+hold on
+plot(Timevec,myTradingRobot.CallOptionOfferPrice,'-','Color','blue')
+plot(Timevec,myTradingRobot.PutOptionOfferPrice,'-','Color','red')
+hold off
+xlabel('Time')
+ylabel('Price of Option')
+
+%% Plot Ask/Bid optionvolumes
