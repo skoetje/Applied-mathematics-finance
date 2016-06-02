@@ -33,12 +33,8 @@ classdef TradingRobot < AutoTrader
     end
 
     methods
-        function HandleDepthUpdate(aBot, ~, aDepth)
-<<<<<<< HEAD
-=======
-                        
+        function HandleDepthUpdate(aBot, ~, aDepth)                        
             %Switch between whether the depth concerns option or stock
->>>>>>> b15acbc32bc146da751460dc509360c3cb27e2ab
             switch aDepth.ISIN
                 case 'ING'; aBot.StockDepth = aDepth;
                 case 'ING20160916PUT800'; aBot.Put800Depth = aDepth;
@@ -62,21 +58,12 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
-<<<<<<< HEAD
             
-            aBot.TryArbitrage();
-        end
-        
-        function Unwind(aBot)
-            
-=======
- 
             TryArbitrage(aBot);
             %aBot.DeltaHedge();
             %aBot.GammaHedge();
             %aBot.VegaHedge();
             %aBot.Unwind();
->>>>>>> b15acbc32bc146da751460dc509360c3cb27e2ab
         end
     end
 end
