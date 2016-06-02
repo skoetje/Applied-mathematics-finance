@@ -1,4 +1,5 @@
-function [volatility] = ImpVol(spotVec,strikeVec,timeVec,optionVec,booleVec)
+function Volatility=ImpVol(spotVec,strikeVec,timeVec,optionVec,booleVec)
+
 %Given certain vectors this function retunrs the implied volatility
     sigmaVec=zeros(length(spotVec),1);
     looplength = length(spotVec);
@@ -12,15 +13,15 @@ function [volatility] = ImpVol(spotVec,strikeVec,timeVec,optionVec,booleVec)
         value=100;
         
         while value-optionVec(i)>0.01,
-            [call, put] = blackscholes(spot,strike,time,0,sigma);
+            [call, put] = BlackScholes(spot,strike,time,0,sigma);
             if boolean==1,
                 value=call;
             else
                 value=put;
             end
-            sigma=sigma+(optionv-value)/vega(spot,strike,time,0,sigma)
+            sigma=sigma+(optionv-value)/Vega(spot,strike,time,0,sigma);
         end
-        sigmaVec(i)=sigma;    
+        sigmaVec(i)=sigma;
     end
-    %volatility=sigmaVec;
+    Volatility=sigmaVec;
 end
