@@ -131,6 +131,7 @@ classdef AnalysisRobot < AutoTrader
                 elseif i==11,
                     myOption=aBot.Call1025Depth;
                 elseif i==12,
+          
                     myOption=aBot.Put1025Depth;
                 elseif i==13,
                     myOption=aBot.Call1050Depth;
