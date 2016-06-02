@@ -27,9 +27,6 @@ classdef TradingRobot < AutoTrader
         
         %Time for the unwind function
         Time
-        
-        %Savings for plotting
-        TotalStock
     end
 
     methods
@@ -60,7 +57,7 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
  
-            TryArbitrage(aBot);
+            TryArbitrage(aBot,);
             %aBot.DeltaHedge();
             %aBot.GammaHedge();
             %aBot.VegaHedge();
