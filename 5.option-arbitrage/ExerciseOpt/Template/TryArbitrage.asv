@@ -1,0 +1,13 @@
+function TryArbitrage(aStockDepth,aCallOptionDepth,aPutOptionDepth)
+%Preambule
+myInterest=0;
+myStrike=str2num(aCallOptionDepth,ISIN(16:end))/100;
+
+%Check Call-Put parity
+if isempty(aCallOptionDepth.askVolume)==0 && isempty(aPutOptionDepth.askVolume,
+    myCallAsk=aCallOptionDepth.askLimitPrice;
+    
+
+
+end
+

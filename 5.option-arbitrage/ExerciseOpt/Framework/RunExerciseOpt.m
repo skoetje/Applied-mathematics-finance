@@ -15,7 +15,7 @@ myOptionsQuoter = OptionsQuoter();
 myExchange.RegisterAutoTrader(myOptionsQuoter);
 myOptionsQuoter.StartAutoTrader(myExchange, myFeedPublisher);
 
-myTradingRobot = AnalysisRobot();
+myTradingRobot = TradingRobot();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
