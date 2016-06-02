@@ -10,7 +10,7 @@ myInterest=0;
 %Delta determined looking at call options
 if isempty(aCallOptionDepth)==0 && isempty(aBot.StockDepth)==0,
     mySpot=Valuate(aBot.StockDepth.askLimitPrice, aBot.StockDepth.askVolume,aBot.StockDepth.bidLimitPrice, aBot.StockDepth.bidVolume, aTickSize);
-    
+    myValueVec=(blackscholes(myStrike(
     
     myCallAskP=aBot.Call1000Depth.askLimitPrice;
     myCallAskV=aBot.Call1000Depth.askVolume;
