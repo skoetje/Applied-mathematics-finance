@@ -59,7 +59,8 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
             
-            TryArbitrage(aBot);
+            CallPutParityCheck(aBot);
+            %TryArbitrage(aBot);
             %aBot.DeltaHedge();
             %aBot.GammaHedge();
             %aBot.VegaHedge();
