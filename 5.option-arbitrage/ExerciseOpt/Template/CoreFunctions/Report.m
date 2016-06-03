@@ -210,10 +210,11 @@ assets = {'ING';
 
 Position = [myINGPos;myPut800Pos;myCall800Pos;myCall900Pos;myPut900Pos;myCall950Pos;myPut950Pos;myCall975Pos;myPut975Pos;myCall1000Pos;myPut1000Pos;myCall1025Pos;myPut1025Pos;myCall1050Pos;myPut1050Pos;myCall1100Pos;myPut1100Pos;myCall1200Pos;myPut1200Pos;myCall1400Pos;myPut1400Pos
 ];
-Value = [myINGVal;myPut800Val;myCall800Val;myCall900Val;myPut900Val;myCall950Val;myPut950Val;myCall975Val;myPut975Val;myCall1000Val;myPut1000Val;myCall1025Val;myPut1025Val;myCall1050Val;myPut1050Val;myCall1100Val;myPut1100Val;myCall1200Val;myPut1200Val;myCall1400Val;myPut1400Val
+Total = [myINGTot;myPut800Tot;myCall800Tot;myCall900Tot;myPut900Tot;myCall950Tot;myPut950Tot;myCall975Tot;myPut975Tot;myCall1000Tot;myPut1000Tot;myCall1025Tot;myPut1025Tot;myCall1050Tot;myPut1050Tot;myCall1100Tot;myPut1100Tot;myCall1200Tot;myPut1200Tot;myCall1400Tot;myPut1400Tot
 ];
-totalFiller = num2cell(zeros((length(assets)),1));
-Total = [totalFiller];
+
+valueFiller = num2cell(ones((length(assets)),1));
+Value = [valueFiller];
 
 
 Table = table(Position,Value,Total,...
