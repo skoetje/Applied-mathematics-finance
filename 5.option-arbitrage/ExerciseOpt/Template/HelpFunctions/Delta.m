@@ -6,7 +6,7 @@ end
 
 myStrike=aStrike;
 myInterest=0;
-myExpiry=(168441-aTime)/168441;
+myExpiry=(1000000-aTime)/1000000;
 
 if isempty(aBot.StockDepth)==0,
     if isempty(aBot.StockDepth.askVolume)==0,
@@ -24,23 +24,43 @@ myDelta=NaN;
 
 %Delta determined looking at call options
 if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
-    myCallAskP=myCallOptionDepth.askLimitPrice;
-    myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
-    myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
-    myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
-    myValueVec=[myValue1,myValue2,myValue3];
-    myGradientVec=gradient(myValueVec)/0.01;
-    myDelta=myGradientVec(2)*myValue3/myValue3;
+    if isempty(myCallOptionDepth.askLimitPrice)==0,
+        myCallAskP=myCallOptionDepth.askLimitPrice;
+        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
+        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
+        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
+        myValueVec=[myValue1,myValue2,myValue3];
+        myGradientVec=gradient(myValueVec)/0.01;
+        myDelta=myGradientVec(2)*myValue3/myValue3;
+    elseif isempty(myCallOptionDepth.bidLimitPrice)==0,
+        myCallBidP=myCallOptionDepth.bidLimitPrice;
+        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallBidP,1));
+        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallBidP,1));
+        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallBidP,1));
+        myValueVec=[myValue1,myValue2,myValue3];
+        myGradientVec=gradient(myValueVec)/0.01;
+        myDelta=myGradientVec(2)*myValue3/myValue3;
+    end        
 end
 
 %Delta determined looking at put options, in case there are no call options
 if isempty(myPutOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
-    myPutAskP=myPutOptionDepth.askLimitPrice;
-    [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
-    [a,myValue2]=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
-    [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
-    myValueVec=[myValue1,myValue2,myValue3];   
-    myGradientVec=gradient(myValueVec)/0.01;
-    myDelta=myGradientVec(2)*myValue3/myValue3; 
+    if isempty(myPutOptionDepth.askLimitPrice)==0,
+        myPutAskP=myPutOptionDepth.askLimitPrice;
+        [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
+        [a,myValue2]=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
+        [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
+        myValueVec=[myValue1,myValue2,myValue3];   
+        myGradientVec=gradient(myValueVec)/0.01;
+        myDelta=myGradientVec(2)*myValue3/myValue3;
+    elseif isempty(myPutOptionDepth.bidLimitPrice)==0,
+        myPutBidP=myPutOptionDepth.bidLimitPrice;
+        [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutBidP,0));
+        [a,myValue2]=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutBidP,0));
+        [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutBidP,0));
+        myValueVec=[myValue1,myValue2,myValue3];   
+        myGradientVec=gradient(myValueVec)/0.01;
+        myDelta=myGradientVec(2)*myValue3/myValue3;
+    end        
 end
 end

@@ -31,6 +31,11 @@ myPut1400 = zeros(length(aTrades.side),2);
     % Cashflows per trade, elements >0 if sell, <0 if buy
 
     for i = 1:length(aTrades.side),
+        if strcmp(aTrades.ISIN(i),    'ING')  
+            myING(i,1) = aTrades.volume(i)* aTrades.side(i);
+            myING(i,2) = - aTrades.volume(i)* aTrades.side(i)*round(aTrades.price(i),10);
+        end
+        
         if strcmp(aTrades.ISIN(i),    'ING20160916CALL800')  
             myCall800(i,1) = aTrades.volume(i)* aTrades.side(i);
             myCall800(i,2) = - aTrades.volume(i)* aTrades.side(i)*round(aTrades.price(i),10);
@@ -127,8 +132,9 @@ myPut1400 = zeros(length(aTrades.side),2);
         end
     end
 
-myINGPos = 0;    
 % Vectors with positions
+myINGPos = sum(myING(:,1));    
+
 myCall800Pos = sum(myCall800(:,1));
 myCall900Pos = sum(myCall900(:,1));
 myCall950Pos = sum(myCall950(:,1));
@@ -152,7 +158,7 @@ myPut1200Pos = sum(myPut1200(:,1));
 myPut1400Pos = sum(myPut1400(:,1));
 
 % Vectors with values
-myINGVal = 0;
+myINGVal = sum(myING(:,2));
 
 myCall800Val = sum(myCall800(:,2));
 myCall900Val = sum(myCall900(:,2));
@@ -181,30 +187,30 @@ myINGTot = 0;
 myCall1000Tot = 0;
 
 assets = {'ING';
-'ING20160916PUT800'; 
 'ING20160916CALL800';
-'ING20160916PUT900'; 
+'ING20160916PUT800'; 
 'ING20160916CALL900';
-'ING20160916PUT950'; 
+'ING20160916PUT900'; 
 'ING20160916CALL950';
-'ING20160916PUT975';
+'ING20160916PUT950'; 
 'ING20160916CALL975';
-'ING20160916PUT1000';
+'ING20160916PUT975';
 'ING20160916CALL1000';
-'ING20160916PUT1025'; 
+'ING20160916PUT1000';
 'ING20160916CALL1025';
+'ING20160916PUT1025';
+'ING20160916CALL1050'; 
 'ING20160916PUT1050'; 
-'ING20160916CALL1050';
-'ING20160916PUT1100'; 
 'ING20160916CALL1100';
-'ING20160916PUT1200'; 
+'ING20160916PUT1100'; 
 'ING20160916CALL1200';
-'ING20160916PUT1400'; 
-'ING20160916CALL1400'};
+'ING20160916PUT1200'; 
+'ING20160916CALL1400';
+'ING20160916PUT1400' };
 
-Position = [myINGPos;myPut800Pos;myCall800Pos;myCall900Pos;myPut900Pos;myCall950Pos;myPut950Pos;myCall975Pos;myPut975Pos;myCall1000Pos;myPut1000Pos;myCall1025Pos;myPut1025Pos;myCall1050Pos;myPut1050Pos;myCall1100Pos;myPut1100Pos;myCall1200Pos;myPut1200Pos;myCall1400Pos;myPut1400Pos
+Position = [myINGPos;myCall800Pos;myPut800Pos;myCall900Pos;myPut900Pos;myCall950Pos;myPut950Pos;myCall975Pos;myPut975Pos;myCall1000Pos;myPut1000Pos;myCall1025Pos;myPut1025Pos;myCall1050Pos;myPut1050Pos;myCall1100Pos;myPut1100Pos;myCall1200Pos;myPut1200Pos;myCall1400Pos;myPut1400Pos
 ];
-Total = [myINGTot;myPut800Val;myCall800Val;myCall900Val;myPut900Val;myCall950Val;myPut950Val;myCall975Val;myPut975Val;myCall1000Val;myPut1000Val;myCall1025Val;myPut1025Val;myCall1050Val;myPut1050Val;myCall1100Val;myPut1100Val;myCall1200Val;myPut1200Val;myCall1400Val;myPut1400Val
+Total = [myINGVal;myCall800Val;myPut800Val;myCall900Val;myPut900Val;myCall950Val;myPut950Val;myCall975Val;myPut975Val;myCall1000Val;myPut1000Val;myCall1025Val;myPut1025Val;myCall1050Val;myPut1050Val;myCall1100Val;myPut1100Val;myCall1200Val;myPut1200Val;myCall1400Val;myPut1400Val
 ];
 
 %Printing of table
@@ -212,10 +218,12 @@ table(Position,Total,'RowNames',assets)
 
 Payments = length(aTrades.ISIN);
 fprintf('Payments: %d\n',Payments);
-Profit = sum(Total);
-fprintf('Profit: %f\n',Profit);
+Cash = sum(Total);
+fprintf('Cash Position: %f\n',Cash);
 Delta = nanmean(aBot.CallDeltaVec);
-fprintf('Average Delta: %f\n',Delta);
+fprintf('Average Call Delta: %f\n',Delta);
+Delta = nanmean(aBot.PutDeltaVec);
+fprintf('Average Put Delta: %f\n',Delta);
 Gamma = nanmean(aBot.CallGammaVec);
 fprintf('Average Gamma: %f\n',Gamma);
 end

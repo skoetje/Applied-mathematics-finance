@@ -27,6 +27,8 @@ classdef TradingRobot < AutoTrader
         
         %Time for the unwind function
         Time
+        Call1000OptionVec
+        Call1000OptionVecV
         
         %Savings for plotting
         TotalStock
@@ -65,13 +67,13 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
             
-            CallPutParityCheck(aBot);
+            %CallPutParityCheck(aBot);
             aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
             aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
             aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
             aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
             %TryArbitrage(aBot);
-            %aBot.DeltaHedge();
+            DeltaHedge(aBot,TimePoint);
             %aBot.GammaHedge();
             %aBot.VegaHedge();
             %aBot.Unwind();
