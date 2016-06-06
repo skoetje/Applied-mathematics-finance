@@ -18,9 +18,9 @@ function [volatility] = ImpVol(spotVec,strikeVec,timeVec,optionVec,booleVec)
             else
                 value=put;
             end
-            sigma=sigma+(optionv-value)/vega(spot,strike,time,0,sigma)
+            sigma=sigma+(optionv-value)/vega(spot,strike,time,0,sigma);
         end
         sigmaVec(i)=sigma;    
     end
-    %volatility=sigmaVec;
+    volatility=sigmaVec;
 end
