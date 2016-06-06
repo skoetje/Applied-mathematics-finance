@@ -30,7 +30,7 @@ if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
     myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
     myValueVec=[myValue1,myValue2,myValue3];
     myGradientVec=gradient(myValueVec)/0.01;
-    myDelta=myGradientVec(2);
+    myDelta=myGradientVec(2)*myValue3/myValue3;
 end
 
 %Delta determined looking at put options, in case there are no call options
@@ -41,6 +41,6 @@ if isempty(myPutOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
     [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
     myValueVec=[myValue1,myValue2,myValue3];   
     myGradientVec=gradient(myValueVec)/0.01;
-    myDelta=myGradientVec(2); 
+    myDelta=myGradientVec(2)*myValue3/myValue3; 
 end
 end

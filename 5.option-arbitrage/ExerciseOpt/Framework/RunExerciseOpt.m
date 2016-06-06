@@ -21,4 +21,4 @@ myTradingRobot.StartAutoTrader(myExchange);
 
 myFeedPublisher.StartVeryShortFeed(myFeed);
 
-Report(myTradingRobot.ownTrades);
+Report(myTradingRobot);

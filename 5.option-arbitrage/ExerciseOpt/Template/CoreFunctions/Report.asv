@@ -1,5 +1,5 @@
 function Report(aBot)
-aTrades = aBot.ownTrades;
+    
 
         % Vectors maken van de grote van de feed, zodat ze sneller gaan
         
@@ -213,9 +213,9 @@ table(Position,Total,'RowNames',assets)
 Payments = length(aTrades.ISIN);
 fprintf('Payments: %d\n',Payments);
 Profit = sum(Total);
-fprintf('Profit: %f\n',Profit);
-Delta = nanmean(aBot.CallDeltaVec);
-fprintf('Average Delta: %f\n',Delta);
-Gamma = nanmean(aBot.CallGammaVec);
-fprintf('Average Gamma: %f\n',Gamma);
+fprintf('Profit: %d\n',Profit);
+Delta = mean(aBot.CallDeltaVec);
+fprintf('Delta: %d\n',Delta);
+Gamma = mean(aBot.CallGammaVec);
+fprintf('Gamma: %d\n',Gamma);
 end

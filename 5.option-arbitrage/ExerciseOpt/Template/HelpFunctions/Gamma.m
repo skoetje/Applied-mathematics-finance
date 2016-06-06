@@ -21,18 +21,18 @@ end
 
 myGamma=NaN;
 mySpot0=mySpot;
-myDeltaVec=zeros(3,1);
+myDeltaVec=[NaN,NaN,NaN];
 myPerturbation=[-0.01,0,0.01];
 
 %Gamma determined looking at call options
 if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
+    myCallAskP=myCallOptionDepth.askLimitPrice;
+    mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myCallAskP,1);
     for i=1:3,
         mySpot=mySpot0+myPerturbation(i);
-        myDelta=NaN;
-        myCallAskP=myCallOptionDepth.askLimitPrice;
-        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
-        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
-        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallAskP,1));
+        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,mySigma);
+        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,mySigma);
+        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,mySigma);
         myValueVec=[myValue1,myValue2,myValue3];
         myGradientVec=gradient(myValueVec)/0.01;
         myDelta=myGradientVec(2);
@@ -44,13 +44,13 @@ end
 
 %Delta determined looking at put options, in case there are no call options
 if isempty(myPutOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
+    myPutAskP=myPutOptionDepth.askLimitPrice;
+    mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myPutAskP,0);
     for i=1:3,
         mySpot=mySpot0+myPerturbation(i);
-        myDelta=NaN;
-        myPutAskP=myPutOptionDepth.askLimitPrice;
-        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
-        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
-        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutAskP,0));
+        [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,mySigma);
+        [a,myValue2]=BlackScholes(mySpot,myStrike,myExpiry,myInterest,mySigma);
+        [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,mySigma);
         myValueVec=[myValue1,myValue2,myValue3];
         myGradientVec=gradient(myValueVec)/0.01;
         myDelta=myGradientVec(2);
