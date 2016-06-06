@@ -30,7 +30,10 @@ classdef TradingRobot < AutoTrader
         
         %Savings for plotting
         TotalStock
-        DeltaVec
+        CallDeltaVec
+        PutDeltaVec
+        CallGammaVec
+        PutGammaVec
     end
 
     methods
@@ -63,7 +66,10 @@ classdef TradingRobot < AutoTrader
             end
             
             CallPutParityCheck(aBot);
-            aBot.DeltaVec(TimePoint)=Delta(aBot,10,TimePoint);
+            aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
+            aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
+            aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
+            aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
             %TryArbitrage(aBot);
             %aBot.DeltaHedge();
             %aBot.GammaHedge();
