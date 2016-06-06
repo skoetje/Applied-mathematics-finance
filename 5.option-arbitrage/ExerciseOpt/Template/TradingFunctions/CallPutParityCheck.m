@@ -1,4 +1,4 @@
-function TryArbitrage(aBot)
+function CallPutParityCheck(aBot)
 
 if isempty(aBot.Call1000Depth)==0 && isempty(aBot.Put1000Depth)==0 && isempty(aBot.StockDepth)==0,
     %Preambule
@@ -6,7 +6,7 @@ if isempty(aBot.Call1000Depth)==0 && isempty(aBot.Put1000Depth)==0 && isempty(aB
     myStrike=str2num(aBot.Call1000Depth.ISIN(16:end))/100;
 
     %Check Call-Put parity
-    %Underpriced call options
+    %Buying call options
     if isempty(aBot.Call1000Depth.askVolume)==0 && isempty(aBot.Put1000Depth.bidVolume)==0 && isempty(aBot.StockDepth.bidVolume)==0,
         myCallAskP=aBot.Call1000Depth.askLimitPrice;
         myCallAskV=aBot.Call1000Depth.askVolume;
@@ -28,7 +28,7 @@ if isempty(aBot.Call1000Depth)==0 && isempty(aBot.Put1000Depth)==0 && isempty(aB
         end
     end
 
-    %Underpriced put options
+    %Buying put options
     if isempty(aBot.Call1000Depth.bidVolume)==0 && isempty(aBot.Put1000Depth.askVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
         myCallBidP=aBot.Call1000Depth.bidLimitPrice;
         myCallBidV=aBot.Call1000Depth.bidVolume;

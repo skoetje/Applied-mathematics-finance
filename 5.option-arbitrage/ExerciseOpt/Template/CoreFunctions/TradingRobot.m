@@ -30,11 +30,13 @@ classdef TradingRobot < AutoTrader
         
         %Savings for plotting
         TotalStock
+        DeltaVec
     end
 
     methods
         function HandleDepthUpdate(aBot, ~, aDepth)
-                        
+            aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+1;
+            TimePoint=aBot.Time(end);
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
                 case 'ING'; aBot.StockDepth = aDepth;
@@ -59,8 +61,10 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
- 
-            TryArbitrage(aBot);
+            
+            CallPutParityCheck(aBot);
+            aBot.DeltaVec(TimePoint)=Delta(aBot,10,TimePoint);
+            %TryArbitrage(aBot);
             %aBot.DeltaHedge();
             %aBot.GammaHedge();
             %aBot.VegaHedge();
