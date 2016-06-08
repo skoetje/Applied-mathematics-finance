@@ -15,10 +15,10 @@ myOptionsQuoter = OptionsQuoter();
 myExchange.RegisterAutoTrader(myOptionsQuoter);
 myOptionsQuoter.StartAutoTrader(myExchange, myFeedPublisher);
 
-myTradingRobot = TradingRobot();
+myTradingRobot = AnalysisRobot();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
 myFeedPublisher.StartVeryShortFeed(myFeed);
 
-Report(myTradingRobot);
+%Report(myTradingRobot);
