@@ -83,6 +83,8 @@ classdef AnalysisImpVol < AutoTrader
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
             
+            aBot.CallImpVec(TimePoint)=Delta(aBot,10,TimePoint,1);
+            aBot.PutImpVec(TimePoint)=Delta(aBot,10,TimePoint,0);
     
     
     
