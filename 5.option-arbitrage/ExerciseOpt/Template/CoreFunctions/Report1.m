@@ -1,4 +1,5 @@
-function Report1(aTrades)
+function Report1(aBot)
+aTrades = aBot.ownTrades;
 
 myING = zeros(length(aTrades.side),2);
 % Now make a 3d matrix, where the row and column denotes 
@@ -7,7 +8,6 @@ myING = zeros(length(aTrades.side),2);
 options = GetAllOptionISINs();
 optionNo = numel(GetAllOptionISINs());
 tradeNo = length(aTrades.side);
-
 
 myOptions = zeros(length(aTrades.side),2,optionNo);
 
@@ -24,19 +24,20 @@ for i = 1:length(aTrades.side),
 end
 
 % Get the position and values
-posOptions = zeros(optionNo+1);
-valOptions = zeros (optionNo+1);
+position = zeros(optionNo+1);
+value = zeros (optionNo+1);
 
 for i = 1:optionNo;
-    posOptions(i+1)=sum(myOptions(:,1,i));
-    valOptions(i+1)=sum(myOptions(:,2,i));   
+    position(i+1)=sum(myOptions(:,1,i));
+    value(i+1)=sum(myOptions(:,2,i));   
 end
 
-posING = sum(myING(:,1));
-valING = sum(myING(:,2));
+position(1) = sum(myING(:,1));
+value(1) = sum(myING(:,2));
 
+% make table
+ING = {'ING'};
+assets = cat(1,ING,GetAllOptionISINs());
 
-
-
-
+table(position,value,'RowNames',assets)
 end
