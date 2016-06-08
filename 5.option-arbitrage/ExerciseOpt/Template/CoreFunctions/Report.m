@@ -46,7 +46,7 @@ table(Position,Total,'RowNames',assets)
 
 Payments = length(aTrades.ISIN);
 fprintf('Payments: %d\n',Payments);
-Profit = myCall1000Pos*0.6915+myPut1000Pos*0.2523+myINGPos*10.4399;
+Profit = myCall1000Pos*0.6915+myPut1000Pos*0.2523+myINGPos*10.4399+sum(Total);
 fprintf('Estimated profit: %f\n',Profit);
 Delta = 0.6742;
 fprintf('Call Delta: %f\n',Delta);
