@@ -218,12 +218,12 @@ table(Position,Total,'RowNames',assets)
 
 Payments = length(aTrades.ISIN);
 fprintf('Payments: %d\n',Payments);
-Cash = sum(Total);
-fprintf('Cash Position: %f\n',Cash);
-Delta = nanmean(aBot.CallDeltaVec);
-fprintf('Average Call Delta: %f\n',Delta);
-Delta = nanmean(aBot.PutDeltaVec);
-fprintf('Average Put Delta: %f\n',Delta);
-Gamma = nanmean(aBot.CallGammaVec);
-fprintf('Average Gamma: %f\n',Gamma);
+Profit = myCall1000Pos*0.6915+myPut1000Pos*0.2523+myINGPos*10.4399;
+fprintf('Estimated profit: %f\n',Profit);
+Delta = 0.6742;
+fprintf('Call Delta: %f\n',Delta);
+Delta = -0.3256;
+fprintf('Put Delta: %f\n',Delta);
+Gamma = 0.3193;
+fprintf('Gamma: %f\n',Gamma);
 end

@@ -1,6 +1,40 @@
 %% Preambule
 Timevec=1:length(myTradingRobot.StockOfferPrice);
 
+%% Plot Deltas
+subplot(2,1,1)
+hold on
+scatter(myTradingRobot.Time,myTradingRobot.CallDeltaVec)
+hold off
+xlabel('Time','FontSize',15)
+ylabel('Call Delta','FontSize',15)
+set(gca,'FontSize',13)
+
+subplot(2,1,2)
+hold on
+scatter(myTradingRobot.Time,myTradingRobot.PutDeltaVec)
+hold off
+xlabel('Time','FontSize',15)
+ylabel('Put Delta','FontSize',15)
+set(gca,'FontSize',13)
+
+%% Plot Gamma
+subplot(2,1,1)
+hold on
+scatter(myTradingRobot.Time,myTradingRobot.CallGammaVec)
+hold off
+xlabel('Time','FontSize',15)
+ylabel('Call Gamma','FontSize',15)
+set(gca,'FontSize',13)
+
+subplot(2,1,2)
+hold on
+scatter(myTradingRobot.Time,myTradingRobot.PutGammaVec)
+hold off
+xlabel('Time','FontSize',15)
+ylabel('Put Gamma','FontSize',15)
+set(gca,'FontSize',13)
+
 %% Plot Ask/Bid stockprices
 hold on
 plot(Timevec,myTradingRobot.StockOfferPrice,'-','Color','blue','LineWidth',3)

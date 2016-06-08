@@ -1,7 +1,10 @@
-function DeltaHedge(aBot,aTime)
+function DeltaHedge_constantDelta(aBot,aTime)
 %First consider only strikes of 10
 myStrike=10;
 myExpiry=(1000000-aTime)/1000000;
+myCallDelta=0.6742;
+myPutDelta=-0.3256;
+CountPut=0;
 
 if isempty(aBot.StockDepth)==0,
     %Buy call options and sell stock
@@ -9,10 +12,10 @@ if isempty(aBot.StockDepth)==0,
         if isempty(aBot.Call1000Depth.askVolume)==0,
             myBidStockV=aBot.StockDepth.bidVolume(1);
             myBidStockP=aBot.StockDepth.bidLimitPrice(1);
-            if round(myBidStockV/Delta(aBot,myStrike,myExpiry,1))<=1000,
+            if round(myBidStockV/myCallDelta)<=1000,
                 
                 %Calculate how many call options we should buy
-                myOptionAmount=round(myBidStockV/Delta(aBot,myStrike,myExpiry,1));
+                myOptionAmount=round(myBidStockV/myCallDelta);
                 myOptionPrice=aBot.Call1000Depth.askLimitPrice;
 
                 %Send buy/sell orders
@@ -22,8 +25,8 @@ if isempty(aBot.StockDepth)==0,
                 aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
                 aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, 0);
                 
-            elseif round(myBidStockV/Delta(aBot,myStrike,myExpiry,1))>1000,
-                myBidStockV=1000*Delta(aBot,myStrike,myExpiry,1);
+            elseif round(myBidStockV/myCallDelta)>1000,
+                myBidStockV=1000*myCallDelta;
                 
                 %Calculate how many call options we should buy
                 myOptionAmount=1000;
@@ -40,15 +43,15 @@ if isempty(aBot.StockDepth)==0,
     end
 
     %Buy put options and buy stock
-    if isempty(aBot.Put1000Depth)==0 && isempty(aBot.StockDepth.askVolume)==0,
+    if isempty(aBot.Put1000Depth)==0 && isempty(aBot.StockDepth.askVolume)==0 && CountPut==1,
         if isempty(aBot.Put1000Depth.askVolume)==0,
             myAskStockV=aBot.StockDepth.askVolume(1);
             myAskStockP=aBot.StockDepth.askLimitPrice(1);
             
-            if -round(myAskStockV/Delta(aBot,myStrike,myExpiry,0))<=1000,
+            if -round(myAskStockV/myPutDelta)<=1000,
             
                 %Calculate how many call options we should buy
-                myOptionAmount=-round(myAskStockV/Delta(aBot,myStrike,myExpiry,0));
+                myOptionAmount=-round(myAskStockV/myPutDelta);
                 myOptionPrice=aBot.Put1000Depth.askLimitPrice;
 
                 %Send buy/sell orders
@@ -57,8 +60,8 @@ if isempty(aBot.StockDepth)==0,
 
                 aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
                 aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, 0);
-            elseif -round(myAskStockV/Delta(aBot,myStrike,myExpiry,0))>1000,
-                myAskStockV=-1000*Delta(aBot,myStrike,myExpiry,0);
+            elseif -round(myAskStockV/myPutDelta)>1000,
+                myAskStockV=-1000*myPutDelta;
             
                 %Calculate how many call options we should buy
                 myOptionAmount=1000;

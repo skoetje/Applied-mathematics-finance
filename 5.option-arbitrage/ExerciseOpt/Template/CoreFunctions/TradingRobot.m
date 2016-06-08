@@ -68,12 +68,13 @@ classdef TradingRobot < AutoTrader
             end
             
             %CallPutParityCheck(aBot);
-            aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
-            aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
-            aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
-            aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
+            %aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
+            %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
+            %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
+            %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
             %TryArbitrage(aBot);
-            DeltaHedge(aBot,TimePoint);
+            %DeltaHedge(aBot,TimePoint);
+            DeltaHedge_constantDelta(aBot,TimePoint);
             %aBot.GammaHedge();
             %aBot.VegaHedge();
             %aBot.Unwind();

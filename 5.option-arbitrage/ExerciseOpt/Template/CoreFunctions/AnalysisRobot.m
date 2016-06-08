@@ -51,6 +51,11 @@ classdef AnalysisRobot < AutoTrader
         Put1100Struct
         Put1200Struct
         Put1400Struct
+        
+        CallDeltaVec
+        PutDeltaVec
+        CallGammaVec
+        PutGammaVec
     end
 
     methods
@@ -82,6 +87,13 @@ classdef AnalysisRobot < AutoTrader
                 case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
+            
+            %We also record the Deltas and gammas
+            
+            aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
+            aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
+            aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
+            aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
             
             %First we record the results of the shares
             myStock=aBot.StockDepth;
