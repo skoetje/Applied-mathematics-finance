@@ -51,6 +51,9 @@ classdef AnalysisImpVol < AutoTrader
         Put1100Struct
         Put1200Struct
         Put1400Struct
+        
+        CallImpVec
+        
     end
 
     methods
@@ -85,6 +88,7 @@ classdef AnalysisImpVol < AutoTrader
             
             aBot.CallImpVec(TimePoint)=Delta(aBot,10,TimePoint,1);
             aBot.PutImpVec(TimePoint)=Delta(aBot,10,TimePoint,0);
+            ImpliedVolatility(aSpot,aStrike,aTime,aOption,aBoolean)
     
     
     
