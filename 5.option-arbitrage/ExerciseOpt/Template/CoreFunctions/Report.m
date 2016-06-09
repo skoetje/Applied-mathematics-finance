@@ -13,10 +13,9 @@ myOptions = zeros(length(aTrades.side),2,optionNo);
 
 for i = 1:length(aTrades.side),
     page = find(strcmp(aTrades.ISIN(i),options));
-    if page == 0,
+    if isempty(page) == 1,
         myING(i,1) = aTrades.volume(i)* aTrades.side(i);
         myING(i,2) = - aTrades.volume(i)* aTrades.side(i)*round(aTrades.price(i),10);
-    
     else
         myOptions(i,1,page) = aTrades.volume(i)* aTrades.side(i);
         myOptions(i,2,page) = - aTrades.volume(i)* aTrades.side(i)*round(aTrades.price(i),10);
@@ -24,16 +23,16 @@ for i = 1:length(aTrades.side),
 end
 
 % Get the position and values
-position = zeros(optionNo+1);
-value = zeros (optionNo+1);
+position = zeros(optionNo+1,1);
+value = zeros (optionNo+1,1);
+
+position(1) = sum(myING(:,1));
+value(1) = sum(myING(:,2));
 
 for i = 1:optionNo;
     position(i+1)=sum(myOptions(:,1,i));
     value(i+1)=sum(myOptions(:,2,i));   
 end
-
-position(1) = sum(myING(:,1));
-value(1) = sum(myING(:,2));
 
 % make table
 ING = {'ING'};
@@ -41,17 +40,25 @@ assets = cat(1,ING,GetAllOptionISINs());
     
 table(position,value,'RowNames',assets)
 
-
-table(Position,Total,'RowNames',assets)
+%table(position,Total,'RowNames',assets)
 
 Payments = length(aTrades.ISIN);
+PaymentsStock = sum(strcmp(aTrades.ISIN,'ING'));
+PaymentsOption = sum(strcmp(aTrades.ISIN,'ING20160916CALL1000'));
+Profit = position(10)*0.6915+position(11)*0.2523+position(1)*10.4399+sum(value);
+Deltapos = round(0.6742*position(10)+position(1));
+Gammapos = round(Gamma(aBot,10,aBot.Time(end),1)*position(10)+position(1));
+DeltaC = 0.6742;
+DeltaP = -0.3256;
+Gamma2 = 0.3193;
+
 fprintf('Payments: %d\n',Payments);
-Profit = myCall1000Pos*0.6915+myPut1000Pos*0.2523+myINGPos*10.4399+sum(Total);
+fprintf('Payments Stock: %d\n',PaymentsStock);
+fprintf('Payments Options: %d\n',PaymentsOption);
+fprintf('Delta position: %d\n',Deltapos);
+fprintf('Gamma position: %d\n',Gammapos);
 fprintf('Estimated profit: %f\n',Profit);
-Delta = 0.6742;
-fprintf('Call Delta: %f\n',Delta);
-Delta = -0.3256;
-fprintf('Put Delta: %f\n',Delta);
-Gamma = 0.3193;
-fprintf('Gamma: %f\n',Gamma);
+fprintf('Call Delta: %f\n',DeltaC);
+fprintf('Put Delta: %f\n',DeltaP);
+fprintf('Gamma: %f\n',Gamma2);
 end
