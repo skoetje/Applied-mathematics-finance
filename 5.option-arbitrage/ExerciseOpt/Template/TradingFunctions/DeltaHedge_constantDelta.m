@@ -26,12 +26,12 @@ if isempty(aBot.StockDepth)==0,
                 aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
                 aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, 0);
                 
-            elseif myBidStockV>round(myPreOptionAmount*myCallDelta),
+            elseif round(myBidStockV/myCallDelta)>myPreOptionAmount,
                 myBidStockVNew=round(myPreOptionAmount*myCallDelta);
                 
                 %Calculate how many call options we should buy
                 myOptionAmount=myPreOptionAmount;
-                myOptionPrice=aBot.Call1000Depth.askLimitPrice;
+                myOptionPrice=aBot.Call1000Depth.askLimitPrice(1);
 
                 %Send buy/sell orders
                 aBot.Call1000Depth.askVolume = aBot.Call1000Depth.askVolume  - myOptionAmount;
