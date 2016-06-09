@@ -1,4 +1,4 @@
-function DeltaHedge(aBot,aTime)
+function StartHedge(aBot,aTime)
 %First consider only strikes of 10
 myStrike=10;
 myExpiry=(1000000-aTime)/1000000;
@@ -42,40 +42,5 @@ if isempty(aBot.StockDepth)==0,
             end
         end
     end
-
-    %Buy put options and buy stock
-    if isempty(aBot.Put1000Depth)==0 && isempty(aBot.StockDepth.askVolume)==0 && CountPut==1,
-        if isempty(aBot.Put1000Depth.askVolume)==0,
-            myAskStockV=aBot.StockDepth.askVolume(1);
-            myAskStockP=aBot.StockDepth.askLimitPrice(1);
-            
-            if -round(myAskStockV/myPutDelta)<=1000,
-            
-                %Calculate how many call options we should buy
-                myOptionAmount=-round(myAskStockV/myPutDelta);
-                myOptionPrice=aBot.Put1000Depth.askLimitPrice;
-
-                %Send buy/sell orders
-                aBot.Put1000Depth.askVolume = aBot.Put1000Depth.askVolume  - myOptionAmount;
-                aBot.SendNewOrder(myOptionPrice, myOptionAmount,  1, {aBot.Put1000Depth.ISIN}, {'IMMEDIATE'}, 0);
-
-                aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
-                aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, 0);
-            elseif -round(myAskStockV/myPutDelta)>1000,
-                myAskStockV=-1000*myPutDelta;
-            
-                %Calculate how many call options we should buy
-                myOptionAmount=1000;
-                myOptionPrice=aBot.Put1000Depth.askLimitPrice;
-
-                %Send buy/sell orders
-                aBot.Put1000Depth.askVolume = aBot.Put1000Depth.askVolume  - myOptionAmount;
-                aBot.SendNewOrder(myOptionPrice, myOptionAmount,  1, {aBot.Put1000Depth.ISIN}, {'IMMEDIATE'}, 0);
-
-                aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
-                aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, 0);
-            end                
-        end
-    end
 end
-end
+

@@ -1,8 +1,5 @@
 classdef TradingRobot < AutoTrader
     properties
-        %Saving Spots
-        SpotHistory
-        
         %Depths to be loaded in
         StockDepth
         
@@ -70,10 +67,8 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
             
-            if isempty(aBot.ownTrades.price)==1,
+            if aBot.ownTrades.,
                 StartHedge(aBot,TimePoint)
-            else
-                RehedgerStocks(aBot,TimePoint)
             end
             
             
@@ -82,17 +77,12 @@ classdef TradingRobot < AutoTrader
             %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
             %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
             %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
-            %Rehedger(aBot,TimePoint)
             %TryArbitrage(aBot);
             %DeltaHedge(aBot,TimePoint);
             %DeltaHedge_constantDelta(aBot,TimePoint);
             %aBot.GammaHedge();
             %aBot.VegaHedge();
             %aBot.Unwind();
-            aBot.SpotHistory=NaN;
-            if isempty(aBot.StockDepth.bidLimitPrice)==0 && isempty(aBot.StockDepth.askLimitPrice)==0,
-                aBot.SpotHistory=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
-            end
         end
     end
 end
