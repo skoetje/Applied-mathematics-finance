@@ -4,7 +4,6 @@ classdef TradingRobot < AutoTrader
         SpotHistory
         AskHistory
         BidHistory
-        CallDeltaVecPos
         
         %Depths to be loaded in
         StockDepth
@@ -79,13 +78,10 @@ classdef TradingRobot < AutoTrader
                 RehedgerStocks(aBot,TimePoint)
             end
             
-            if length(aBot.ownTrades.price)==2,
-                aBot.CallDeltaVecPos(TimePoint)=aBot.ownTrades.volume(2)+aBot.ownTrades.volume(1)*Delta2(aBot,10,TimePoint,1);
-            elseif length(aBot.ownTrades.price)>2,
-                aBot.CallDeltaVecPos(TimePoint)=sum(aBot.ownTrades.volume(2:end))+aBot.ownTrades.volume(1)*Delta2(aBot,10,TimePoint,1);
-            end
+            
             %CallPutParityCheck(aBot);
             aBot.CallDeltaVec(TimePoint)=Delta2(aBot,10,TimePoint,1);
+            aBot.CallDeltaVecPos(TimePoint)=sum(aBot.volume(2:end))*Delta2(aBot,10,TimePoint,1);
             %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
             %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
             %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);

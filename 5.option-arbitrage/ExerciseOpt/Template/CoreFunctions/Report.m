@@ -52,10 +52,17 @@ BidStock = aBot.StockDepth.bidLimitPrice(1);
 AskStock = aBot.StockDepth.askLimitPrice(1);
 BidCall = aBot.Call1000Depth.bidLimitPrice(1);
 AskCall = aBot.Call1000Depth.askLimitPrice(1);
+BidPut = aBot.Put1000Depth.bidLimitPrice(1);
+AskPut = aBot.Put1000Depth.askLimitPrice(1);
 DeltaC = 0.6742;
 DeltaP = -0.3256;
 Gamma2 = 0.3193;
 
+if position(11)<=0,
+    OptionValueP=AskPut*position(11);
+elseif position(11)>0,
+    OptionValueP=BidPut*position(11);
+end
 if position(10)<=0,
     OptionValue=AskCall*position(10);
 elseif position(10)>0,
@@ -66,7 +73,7 @@ if position(1)<=0,
 elseif position(1)>0,
     StockValue=BidStock*position(1);
 end
-Profit=StockValue+OptionValue+sum(value);
+Profit=StockValue+OptionValue+OptionValueP+sum(value);
 Premium=aBot.ownTrades.volume(1)*aBot.Call1000Depth.bidLimitPrice(1)-aBot.ownTrades.volume(2)*aBot.StockDepth.askLimitPrice(1);
 PrePremium=aBot.ownTrades.volume(1)*aBot.ownTrades.price(1)-aBot.ownTrades.volume(2)*aBot.ownTrades.price(2);
 

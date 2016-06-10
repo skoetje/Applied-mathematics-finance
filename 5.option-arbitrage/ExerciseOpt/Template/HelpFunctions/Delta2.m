@@ -6,7 +6,7 @@ end
 
 myStrike=aStrike;
 myInterest=0;
-myExpiry=(1000000-aTime)/1000000;
+myExpiry=((169000-aTime)+3600*24*daysact('10-jun-2016',  '16-sep-2016'))/(3600*24*252);
 
 if isempty(aBot.StockDepth)==0,
     if isempty(aBot.StockDepth.askVolume)==0,
