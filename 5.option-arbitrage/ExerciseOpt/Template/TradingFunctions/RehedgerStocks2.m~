@@ -1,0 +1,16 @@
+function RehedgerStocks2(aBot,aTime)
+myDeltaPosition = DeltaPosition(aBot);
+
+if myDeltaPosition>1,
+    myBidStockV=abs(round(myDeltaPosition));
+    myBidStockP=aBot.StockDepth.bidLimitPrice(1);
+    aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
+    aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, aTime);
+end
+if myDeltaPosition<-5,
+    myAskStockV=abs(round(myDeltaPosition));
+    myAskStockP=aBot.StockDepth.askLimitPrice(1);
+    aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
+    aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, aTime);
+end
+end

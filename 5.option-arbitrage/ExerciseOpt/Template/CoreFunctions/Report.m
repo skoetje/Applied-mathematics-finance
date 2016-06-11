@@ -46,7 +46,7 @@ Payments = length(aTrades.ISIN);
 PaymentsStock = sum(strcmp(aTrades.ISIN,'ING'));
 PaymentsOption = sum(strcmp(aTrades.ISIN,'ING20160916CALL1000'));
 %Profit = position(10)*0.6915+position(11)*0.2523+position(1)*10.4399+sum(value);
-Deltapos = round(Delta2(aBot,10,aBot.Time(end),1)*position(10)+position(1));
+Deltapos = round(aBot.CallDeltaVecAFT(end));
 Gammapos = round(Gamma(aBot,10,aBot.Time(end),1)*position(10)+position(1));
 BidStock = aBot.StockDepth.bidLimitPrice(1);
 AskStock = aBot.StockDepth.askLimitPrice(1);
@@ -54,9 +54,6 @@ BidCall = aBot.Call1000Depth.bidLimitPrice(1);
 AskCall = aBot.Call1000Depth.askLimitPrice(1);
 BidPut = aBot.Put1000Depth.bidLimitPrice(1);
 AskPut = aBot.Put1000Depth.askLimitPrice(1);
-DeltaC = 0.6742;
-DeltaP = -0.3256;
-Gamma2 = 0.3193;
 
 if position(11)<=0,
     OptionValueP=AskPut*position(11);
@@ -76,7 +73,8 @@ end
 Profit=StockValue+OptionValue+OptionValueP+sum(value);
 Premium=aBot.ownTrades.volume(1)*aBot.Call1000Depth.bidLimitPrice(1)-aBot.ownTrades.volume(2)*aBot.StockDepth.askLimitPrice(1);
 PrePremium=aBot.ownTrades.volume(1)*aBot.ownTrades.price(1)-aBot.ownTrades.volume(2)*aBot.ownTrades.price(2);
-
+PremiumLoss=Premium-PrePremium;
+CashAlt=sum(value)+PrePremium;
 
 fprintf('Payments: %d\n',Payments);
 fprintf('Payments Stock: %d\n',PaymentsStock);
@@ -85,9 +83,8 @@ fprintf('Delta position: %d\n',Deltapos);
 fprintf('Gamma position: %d\n',Gammapos);
 fprintf('Premium (end prices): %f\n',Premium);
 fprintf('Premium (start prices): %f\n',PrePremium);
-fprintf('Cash Position before end: %f\n',sum(value));
-fprintf('Profit after unwind: %f\n',Profit);
-fprintf('Call Delta: %f\n',DeltaC);
-fprintf('Put Delta: %f\n',DeltaP);
-fprintf('Gamma: %f\n',Gamma2);
+fprintf('Premium loss: %f\n',PremiumLoss);
+fprintf('Cash Position before unwind: %f\n',sum(value));
+fprintf('Cash Altering due to hedging: %f\n',CashAlt);
+fprintf('Cash Position after unwind: %f\n',Profit);
 end

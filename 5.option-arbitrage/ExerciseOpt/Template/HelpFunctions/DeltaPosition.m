@@ -1,0 +1,18 @@
+function myDeltaPosition = DeltaPosition(aBot,aStrike)
+
+myGammaVec=[0.3,0.3,0.3,0.3,0.3193, 0.3,0.3,0.3,0.3,0.3];
+if aStrike==10,
+    myNumber=5;
+elseif aStrike==8,
+    myNumber=1;
+end
+myGamma=myGammaVec(myNumber);
+
+myLTtime=round(aBot.sentOrders.ownOrderId(end));
+mySpot=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
+myPastSpot=aBot.SpotHistory(myLTtime);
+mySpotMovement=mySpot-myPastSpot;
+myDeltaChange=aBot.CallDeltaVecAFT(myLTtime)+myGamma*mySpotMovement;
+myDeltaPosition = myDeltaChange*aBot.ownTrades.volume(1);
+
+end

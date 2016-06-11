@@ -5,6 +5,7 @@ myExpiry=((169000-aTime)+3600*24*daysact('10-jun-2016',  '16-sep-2016'))/(3600*2
 aTrades=aBot.ownTrades;
 myING = zeros(length(aTrades.side),2);
 options = GetAllOptionISINs();
+myLTtime = round(aBot.sentOrders.ownOrderId(end));
 
 for i = 1:length(aTrades.side),
     page = find(strcmp(aTrades.ISIN(i),options));
@@ -25,31 +26,51 @@ if isempty(aBot.StockDepth)==0,
 %         end
         %myCallDeltaChange = (mySpot-aBot.SpotHistory(end))*0.3193;
         %myCallDeltaChange = (mySpot-aBot.ownTrades.price(end))*0.3193;
-        
-        if sign(aBot.StockDepth.bidLimitPrice(1)-aBot.BidHistory(end))==sign(aBot.StockDepth.askLimitPrice(1)-aBot.AskHistory(end)),
-            mySpot = (aBot.StockDepth.askLimitPrice(1)+aBot.StockDepth.bidLimitPrice(1))/2;
-            myCallDeltaChange = (mySpot-aBot.SpotHistory(end))*0.3193;
-            %myCallDeltaChangeAsk = (aBot.StockDepth.askLimitPrice(1)-aBot.AskHistory(end))*0.3193;
-            %myCallDeltaChangeBid = (aBot.StockDepth.bidLimitPrice(1)-aBot.BidHistory(end))*0.3193;
-            %if abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange)) >= 1,
-            if myCallDeltaChange > 0.00001,
-                myBidStockV=abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange));
-                myBidStockP=aBot.StockDepth.bidLimitPrice(1);
-                if myBidStockP> mean(aBot.BidHistory((end-1):end)),
-                    aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
-                    aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, aTime);
-                end
-            end
-            if myCallDeltaChange < -0.00001,
-                myAskStockV=abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange));
-                myAskStockP=aBot.StockDepth.askLimitPrice(1);
+        mySpot = (aBot.StockDepth.askLimitPrice(1)+aBot.StockDepth.bidLimitPrice(1))/2;     
+        mySpotLast = (aBot.AskHistory(myLTtime)+aBot.BidHistory(myLTtime))/2;        
+        myCallDeltaChange = (mySpot-mySpotLast)*0.3193;
+        myDeltaPosition = sum(myING(:,1))+aBot.ownTrades.volume(1)*myCallDeltaChange+aBot.ownTrades.volume(2);
+        myDeltaPosition = DeltaPosition(aBot,myStrike,aTime,1);
+        %if sign(aBot.StockDepth.bidLimitPrice(1)-aBot.BidHistory(end))==sign(aBot.StockDepth.askLimitPrice(1)-aBot.AskHistory(end)),
 
-                if myAskStockP< mean(aBot.AskHistory((end-1):end)),
-                    aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
-                    aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, aTime);
-                end
+        %myCallDeltaChangeAsk = (aBot.StockDepth.askLimitPrice(1)-aBot.AskHistory(end))*0.3193;
+        %myCallDeltaChangeBid = (aBot.StockDepth.bidLimitPrice(1)-aBot.BidHistory(end))*0.3193;
+%         %if abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange)) >= 1,
+%         if abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange)) >= 4,
+%             myBidStockV=abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange));
+%             myBidStockP=aBot.StockDepth.bidLimitPrice(1);
+%             if myBidStockP> mean(aBot.BidHistory((end-1):end)),
+%                 aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
+%                 aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, aTime);
+%             end
+%         end
+%         if abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange)) >=4,
+%             myAskStockV=abs(round(aBot.ownTrades.volume(1)*myCallDeltaChange));
+%             myAskStockP=aBot.StockDepth.askLimitPrice(1);
+% 
+%             if myAskStockP< mean(aBot.AskHistory((end-1):end)),
+%                 aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
+%                 aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, aTime);
+%             end
+%         end
+        if myDeltaPosition>5,
+            myBidStockV=abs(round(myDeltaPosition));
+            myBidStockP=aBot.StockDepth.bidLimitPrice(1);
+            if myBidStockP> mean(aBot.BidHistory((end-1):end)),
+                aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
+                aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, aTime);
             end
         end
+        if myDeltaPosition<-5,
+            myAskStockV=abs(round(myDeltaPosition));
+            myAskStockP=aBot.StockDepth.askLimitPrice(1);
+
+            if myAskStockP< mean(aBot.AskHistory((end-1):end)),
+                aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1) - myAskStockV;
+                aBot.SendNewOrder(myAskStockP, myAskStockV,  1, {'ING'}, {'IMMEDIATE'}, aTime);
+            end
+        end
+        %end
     end
 end
 end

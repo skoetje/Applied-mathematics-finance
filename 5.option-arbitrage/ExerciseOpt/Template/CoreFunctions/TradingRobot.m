@@ -4,7 +4,7 @@ classdef TradingRobot < AutoTrader
         SpotHistory
         AskHistory
         BidHistory
-        CallDeltaVecPos
+        CallDeltaPos
         
         %Depths to be loaded in
         StockDepth
@@ -38,7 +38,8 @@ classdef TradingRobot < AutoTrader
         
         %Savings for plotting
         TotalStock
-        CallDeltaVec
+        CallDeltaVecAFT
+        CallDeltaVecBEF
         PutDeltaVec
         CallGammaVec
         PutGammaVec
@@ -48,6 +49,8 @@ classdef TradingRobot < AutoTrader
         function HandleDepthUpdate(aBot, ~, aDepth)
             aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+1;
             TimePoint=aBot.Time(end);
+            
+            
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
                 case 'ING'; aBot.StockDepth = aDepth;
@@ -72,31 +75,7 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
-            
-            if isempty(aBot.ownTrades.price)==1,
-                StartHedge(aBot,TimePoint)
-            else
-                RehedgerStocks(aBot,TimePoint)
-            end
-            
-            if length(aBot.ownTrades.price)==2,
-                aBot.CallDeltaVecPos(TimePoint)=aBot.ownTrades.volume(2)+aBot.ownTrades.volume(1)*Delta2(aBot,10,TimePoint,1);
-            elseif length(aBot.ownTrades.price)>2,
-                aBot.CallDeltaVecPos(TimePoint)=sum(aBot.ownTrades.volume(2:end))+aBot.ownTrades.volume(1)*Delta2(aBot,10,TimePoint,1);
-            end
-            %CallPutParityCheck(aBot);
-            aBot.CallDeltaVec(TimePoint)=Delta2(aBot,10,TimePoint,1);
-            %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
-            %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
-            %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
-            %Rehedger(aBot,TimePoint)
-            %TryArbitrage(aBot);
-            %DeltaHedge(aBot,TimePoint);
-            %DeltaHedge_constantDelta(aBot,TimePoint);
-            %aBot.GammaHedge();
-            %aBot.VegaHedge();
-            %aBot.Unwind();           
-            
+                        
             aBot.BidHistory(TimePoint)=NaN;
             if isempty(aBot.StockDepth.bidLimitPrice)==0,
                 aBot.BidHistory(TimePoint)=aBot.StockDepth.bidLimitPrice(1);
@@ -111,6 +90,34 @@ classdef TradingRobot < AutoTrader
             if isempty(aBot.StockDepth.bidLimitPrice)==0 && isempty(aBot.StockDepth.askLimitPrice)==0,
                 aBot.SpotHistory(TimePoint)=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
             end
+            
+            %aBot.OptionBidHistory(TimePoint)=1;
+            
+            
+            aBot.CallDeltaVecBEF(TimePoint)=0;
+            aBot.CallDeltaVecAFT(TimePoint)=0;
+            
+            if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+                if isempty(aBot.ownTrades.price)==1,
+                    StartHedge2(aBot,TimePoint,10)
+                elseif isempty(aBot.ownTrades.price)==0,
+                    aBot.CallDeltaVecBEF(TimePoint)=DeltaPosition(aBot,10);
+                    RehedgerStocks2(aBot,TimePoint)
+                    aBot.CallDeltaVecAFT(TimePoint)=DeltaPosition(aBot,10);
+                end
+            end
+            
+            %CallPutParityCheck(aBot);
+            %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
+            %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
+            %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
+            %Rehedger(aBot,TimePoint)
+            %TryArbitrage(aBot);
+            %DeltaHedge(aBot,TimePoint);
+            %DeltaHedge_constantDelta(aBot,TimePoint);
+            %aBot.GammaHedge();
+            %aBot.VegaHedge();
+            %aBot.Unwind();           
         end
     end
 end

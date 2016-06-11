@@ -2,8 +2,8 @@ function StartHedge(aBot,aTime)
 %First consider only strikes of 10
 myStrike=10;
 myExpiry=((169000-aTime)+3600*24*daysact('10-jun-2016',  '16-sep-2016'))/(3600*24*252);
-myCallDelta=Delta3(aBot,myStrike,aTime,1);
-myPutDelta=Delta3(aBot,myStrike,aTime,1);
+myCallDelta=Delta2(aBot,myStrike,aTime,1);
+myPutDelta=Delta2(aBot,myStrike,aTime,1);
 CountPut=0;
 
 if isempty(aBot.StockDepth)==0,
@@ -20,7 +20,7 @@ if isempty(aBot.StockDepth)==0,
                 myOptionPrice=aBot.Call1000Depth.askLimitPrice;
 
                 %Send buy/sell orders
-                if myBidStockP>mean(aBot.BidHistory(1:end))+std(aBot.BidHistory(1:end)) && myOptionPrice<10.0,
+                if myBidStockP>aBot.BidHistory(1:e && myOptionPrice<10.0,
                     aBot.Call1000Depth.askVolume = aBot.Call1000Depth.askVolume  - myOptionAmount;
                     aBot.SendNewOrder(myOptionPrice, myOptionAmount,  1, {aBot.Call1000Depth.ISIN}, {'IMMEDIATE'}, aTime);
 
