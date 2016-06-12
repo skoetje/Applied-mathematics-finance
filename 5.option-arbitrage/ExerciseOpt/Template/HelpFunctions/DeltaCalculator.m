@@ -6,7 +6,7 @@ if aStrike==10,
 end
 
 %Calculate the very first Delta
-myDeltastart=Delta3(aBot,aStrike,aTime,aBoolean);
+myDeltastart=DeltaStart(aBot,myStrike,aTime,1);
 myLTtime=round(aBot.sentOrders.ownOrderId(end));
 mySpot=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
 myPastSpot=(aBot.AskHistory(myLTtime)+aBot.BidHistory(myLTtime))/2;

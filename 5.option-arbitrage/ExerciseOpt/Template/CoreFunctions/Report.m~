@@ -74,19 +74,8 @@ elseif position(1)>0,
     StockValue=BidStock*position(1);
 end
 %Profit=StockValue+OptionValue+OptionValueP+sum(value);
-Limitpricevec=zeros(10,1);
-for i=1:length(aBot.myStrikeVec),
-    myStrike=aBot.myStrikeVec(i);
-    myOptionDepth=OptionDepth(aBot,myStrike,1);
-    if isempty(myOptionDepth.bidLimitPrice)==0,
-        Limitpricevec(i)=myOptionDepth.bidLimitPrice(1);
-    elseif isempty(myOptionDepth.bidLimitPrice)==1,
-        Limitpricevec(i)=0;
-    end
-end
-
 Premium=sum(value(1:16));
-PrePremium=-sum(position(1:20:2).*transpose(Limitpricevec));
+PrePremium=position(1:16).*;
 PremiumLoss=Premium-PrePremium;
 CashAlt=sum(value)+PrePremium;
 
@@ -111,7 +100,7 @@ fprintf('Delta position: %d\n',Deltapos);
 fprintf('Gamma position: %d\n',Gammapos);
 fprintf('Premium (end prices): %f\n',Premium);
 fprintf('Premium (start prices): %f\n',PrePremium);
-fprintf('Premium change: %f\n',PremiumLoss);
+fprintf('Premium loss: %f\n',PremiumLoss);
 fprintf('Cash Position before unwind: %f\n',sum(value));
 fprintf('Cash Altering due to hedging: %f\n',CashAlt);
 fprintf('Cash Position after unwind: %f\n',Profit);

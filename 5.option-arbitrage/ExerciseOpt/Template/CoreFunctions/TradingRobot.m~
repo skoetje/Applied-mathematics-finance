@@ -1,9 +1,5 @@
 classdef TradingRobot < AutoTrader
     properties
-        %TradeTimes
-        TradeTimes
-        
-        
         %Saving Spots
         SpotHistory
         AskHistory
@@ -117,7 +113,7 @@ classdef TradingRobot < AutoTrader
                     aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
 
                     if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-                        if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
+                        if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0,
                             StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
                         end
                     end
@@ -126,12 +122,13 @@ classdef TradingRobot < AutoTrader
             aBot.DeltaPositionBef(TimePoint)=0;
             aBot.DeltaPositionAft(TimePoint)=0;
             if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-                if length(aBot.ownTrades.price)>16,
+                if length(aBot.ownTrades.price)>2,
+                    aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
                     for i=1:length(aBot.myStrikeVec),
                         myStrike=aBot.myStrikeVec(i);
+                        if 
                         aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
                     end
-                    aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
                     RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
                 end
@@ -151,7 +148,7 @@ classdef TradingRobot < AutoTrader
             %DeltaHedge_constantDelta(aBot,TimePoint);
             %aBot.GammaHedge();
             %aBot.VegaHedge();
-            %Unwind(aBot,TimePoint);
+            %aBot.Unwind();
             aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+2;
         end
     end

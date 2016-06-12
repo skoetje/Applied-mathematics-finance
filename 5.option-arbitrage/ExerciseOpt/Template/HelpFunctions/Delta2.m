@@ -24,7 +24,7 @@ myDelta=NaN;
 
 %Delta determined looking at call options
 if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
-    myDelta=0.6742+0.3193*(mySpot-10.4);
+    myDelta=0.6742+0.3193*(mySpot-aBot.);
 end
 
 %Delta determined looking at put options, in case there are no call options

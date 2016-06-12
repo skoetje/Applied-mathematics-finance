@@ -3,7 +3,7 @@ clear myFeedPublisher;
 clear myOptionsQuoter;
 clear myTradingRobot;
 
-load('ING1.mat');
+load('ING3.mat');
 
 myExchange = CreateExchangeOpt();
 

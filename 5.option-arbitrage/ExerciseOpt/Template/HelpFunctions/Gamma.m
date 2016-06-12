@@ -1,18 +1,17 @@
 function myGamma=Gamma(aBot,aStrike,aTime,aBoolean)
-if aStrike==10,
-    myCallOptionDepth=aBot.Call1000Depth;
-    myPutOptionDepth=aBot.Put1000Depth;
-end
+
+myOptionDepth=OptionDepth(aBot,aStrike,aBoolean);
+
 myStrike=aStrike;
 myInterest=0;
-myExpiry=(1000000-aTime)/1000000;
+myExpiry=((169000-aTime)+3600*24*daysact('10-jun-2016',  '16-sep-2016'))/(3600*24*252);
 
 if isempty(aBot.StockDepth)==0,
     if isempty(aBot.StockDepth.askVolume)==0,
-        mySpot=aBot.StockDepth.askLimitPrice(1);
+        mySpot=NaN;
     end
     if isempty(aBot.StockDepth.bidVolume)==0,
-        mySpot=aBot.StockDepth.bidLimitPrice(1);
+        mySpot=NaN;
     end
     if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
         mySpot=Valuate(aBot.StockDepth.askLimitPrice(1), aBot.StockDepth.askVolume(1), aBot.StockDepth.bidLimitPrice(1), aBot.StockDepth.bidVolume(1), 0.01);
@@ -25,9 +24,9 @@ myDeltaVec=[NaN,NaN,NaN];
 myPerturbation=[-0.01,0,0.01];
 
 %Gamma determined looking at call options
-if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
-    if isempty(myCallOptionDepth.askLimitPrice)==0,
-        myCallAskP=myCallOptionDepth.askLimitPrice;
+if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
+    if isempty(myOptionDepth.askLimitPrice)==0,
+        myCallAskP=myOptionDepth.askLimitPrice;
         mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myCallAskP,1);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
@@ -41,8 +40,8 @@ if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
         end
         myGradientVec2=gradient(myDeltaVec)/0.01;
         myGamma=myGradientVec2(2);
-    elseif isempty(myCallOptionDepth.bidLimitPrice)==0,
-        myCallBidP=myCallOptionDepth.bidLimitPrice;
+    elseif isempty(myOptionDepth.bidLimitPrice)==0,
+        myCallBidP=myOptionDepth.bidLimitPrice;
         mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myCallBidP,1);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
@@ -60,9 +59,9 @@ if isempty(myCallOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
 end
 
 %Delta determined looking at put options, in case there are no call options
-if isempty(myPutOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
-    if isempty(myPutOptionDepth.askLimitPrice)==0,
-        myPutAskP=myPutOptionDepth.askLimitPrice;
+if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
+    if isempty(myOptionDepth.askLimitPrice)==0,
+        myPutAskP=myOptionDepth.askLimitPrice;
         mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myPutAskP,0);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
@@ -76,8 +75,8 @@ if isempty(myPutOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
         end
         myGradientVec2=gradient(myDeltaVec)/0.01;
         myGamma=myGradientVec2(2);
-    elseif isempty(myPutOptionDepth.bidLimitPrice)==0,
-        myPutBidP=myPutOptionDepth.bidLimitPrice;
+    elseif isempty(myOptionDepth.bidLimitPrice)==0,
+        myPutBidP=myOptionDepth.bidLimitPrice;
         mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myPutBidP,0);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
