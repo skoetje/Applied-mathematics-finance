@@ -3,7 +3,7 @@ clear myFeedPublisher;
 clear myOptionsQuoter;
 clear myTradingRobot;
 
-load('ING3.mat');
+load('ING1.mat');
 
 myExchange = CreateExchangeOpt();
 
@@ -19,6 +19,6 @@ myTradingRobot = TradingRobot();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
-myFeedPublisher.StartVeryShortFeed(myFeed);
+myFeedPublisher.StartShortFeed(myFeed);
 
 Report(myTradingRobot);
