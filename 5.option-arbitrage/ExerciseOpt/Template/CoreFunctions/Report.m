@@ -86,7 +86,7 @@ for i=1:length(aBot.myStrikeVec),
 end
 
 Premium=sum(value(1:16));
-PrePremium=-sum(position(1:20:2).*transpose(Limitpricevec));
+PrePremium=-sum(Callpositions.*Limitpricevec);
 PremiumLoss=Premium-PrePremium;
 CashAlt=sum(value)+PrePremium;
 
@@ -95,9 +95,9 @@ for i=1:length(aBot.myStrikeVec),
     myStrike = aBot.myStrikeVec(i);
     myOptionDepth = OptionDepth(aBot,myStrike,1);
     if isempty(myOptionDepth.bidLimitPrice)==0,
-        ProfitVec(i)= myOptionDepth.bidLimitPrice(1)*1000/length(aBot.myStrikeVec);
+        ProfitVec(i)= myOptionDepth.bidLimitPrice(1)*Callpositions(i);
     elseif isempty(myOptionDepth.bidLimitPrice)==1,
-        ProfitVec(i)= 0*1000/length(aBot.myStrikeVec);
+        ProfitVec(i)= 0;
     end
 end
 
@@ -113,6 +113,9 @@ fprintf('Premium (end prices): %f\n',Premium);
 fprintf('Premium (start prices): %f\n',PrePremium);
 fprintf('Premium change: %f\n',PremiumLoss);
 fprintf('Cash Position before unwind: %f\n',sum(value));
-fprintf('Cash Altering due to hedging: %f\n',CashAlt);
+%fprintf('Cash Altering due to hedging: %f\n',CashAlt);
 fprintf('Cash Position after unwind: %f\n',Profit);
+fprintf('Sent orders: %d\n',length(aBot.sentOrders.volume));
+fprintf('Accepted Orders: %d\n',length(aBot.acceptedOrders.volume));
+fprintf('Own Trades: %d\n',length(aBot.ownTrades.volume));
 end

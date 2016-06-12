@@ -51,6 +51,10 @@ classdef TradingRobot < AutoTrader
         DeltaConstantG
         Gammas
         myStrikeVec
+        
+        
+        Tester1
+        Tester2
     end
 
     methods
@@ -132,7 +136,7 @@ classdef TradingRobot < AutoTrader
                         aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
                     end
                     aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-                    RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
+                    %RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
                 end
             end
