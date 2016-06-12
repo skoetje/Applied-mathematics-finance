@@ -136,7 +136,7 @@ classdef TradingRobot < AutoTrader
                         aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
                     end
                     aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-                    %RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
+                    RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
                 end
             end
@@ -155,7 +155,7 @@ classdef TradingRobot < AutoTrader
             %DeltaHedge_constantDelta(aBot,TimePoint);
             %aBot.GammaHedge();
             %aBot.VegaHedge();
-            %Unwind(aBot,TimePoint);
+            Unwind(aBot,TimePoint);
             aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+2;
         end
     end

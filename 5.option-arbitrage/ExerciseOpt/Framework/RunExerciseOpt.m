@@ -19,6 +19,6 @@ myTradingRobot = AnalysisRobot2();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
-myFeedPublisher.StartVeryShortFeed(myFeed);
+myFeedPublisher.StartShortFeed(myFeed);
 
 Report(myTradingRobot);
