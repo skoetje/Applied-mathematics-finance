@@ -1,0 +1,7 @@
+function myVega = Vega(aBot,aStrike,aTime,aInterest)
+
+mySpot=aBot.S
+
+myExpiry=((169000-aTime)+3600*24*daysact('10-jun-2016',  '16-sep-2016'))/(3600*24*252);
+d1=(log(aSpot/aStrike)+(aInterest+aSigma^2/2)*myExpiry)/(aSigma*sqrt(myExpiry));
+myVega = aSpot*sqrt(1)*normProbDensFun(d1);
