@@ -112,40 +112,43 @@ classdef TradingRobot < AutoTrader
             aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);
             
             %Initializing       
-            for i=1:length(aBot.myStrikeVec),
-                myStrike=aBot.myStrikeVec(i);
-                if isempty(OptionDepth(aBot,myStrike,1))==0;
-                    myOptionDepth=OptionDepth(aBot,myStrike,1);
-                    aBot.StartDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
-                    aBot.DeltaConstantG(TimePoint,i)=NaN;
-                    aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
-
-                    if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-                        if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
-                            StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
-                        end
-                    end
-                end
-            end
-            aBot.DeltaPositionBef(TimePoint)=0;
-            aBot.DeltaPositionAft(TimePoint)=0;
-            if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-                if length(aBot.ownTrades.price)>16,
-                    for i=1:length(aBot.myStrikeVec),
-                        myStrike=aBot.myStrikeVec(i);
-                        aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
-                    end
-                    aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-                    RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
-                    aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-                end
-            end
+%             for i=1:length(aBot.myStrikeVec),
+%                 myStrike=aBot.myStrikeVec(i);
+%                 if isempty(OptionDepth(aBot,myStrike,1))==0;
+%                     myOptionDepth=OptionDepth(aBot,myStrike,1);
+%                     aBot.StartDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
+%                     aBot.DeltaConstantG(TimePoint,i)=NaN;
+%                     aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+% 
+%                     if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+%                         if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
+%                             StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
+%                         end
+%                     end
+%                 end
+%             end
+%             aBot.DeltaPositionBef(TimePoint)=0;
+%             aBot.DeltaPositionAft(TimePoint)=0;
+%             if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+%                 if length(aBot.ownTrades.price)>16,
+%                     for i=1:length(aBot.myStrikeVec),
+%                         myStrike=aBot.myStrikeVec(i);
+%                         aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
+%                     end
+%                     aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
+%                     RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
+%                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
+%                 end
+%             end
             
-            if sum(TimePoint/100 == linspace(0,100,101))==1,
+            if sum(TimePoint/100 == linspace(0,1000,1001))==1,
                 TimePoint
             end
             
-            %CallPutParityCheck(aBot);
+            for i=1:length(aBot.myStrikeVec),
+                myStrike=aBot.myStrikeVec(i);
+                CallPutParityMark(aBot,myStrike);
+            end
             %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
             %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
             %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);

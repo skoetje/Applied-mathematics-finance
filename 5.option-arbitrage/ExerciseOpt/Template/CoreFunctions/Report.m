@@ -34,10 +34,7 @@ for i = 1:optionNo;
     value(i+1)=sum(myOptions(:,2,i));
 end
 % All Call positions:
-Callpositions=zeros(length(myStrikeVec),1);
-for i=1:length(myStrikeVec),
-    Callpositions(i)=position(2*i);
-end
+
 %  table
 ING = {'ING'};
 assets = cat(1,ING,GetAllOptionISINs());
@@ -48,31 +45,9 @@ table(position,value,'RowNames',assets)
 Payments = length(aTrades.ISIN);
 PaymentsStock = sum(strcmp(aTrades.ISIN,'ING'));
 PaymentsOption = length(aBot.ownTrades.volume)-PaymentsStock;
-Deltapos = round(nansum(aBot.DeltaConstantG(end,:).*transpose(Callpositions))+position(1));
+Deltapos = round(nansum(aBot.Delta(end,:).*transpose(Callpositions))+position(1));
 Gammapos = round(Gamma(aBot,10,aBot.Time(end),1)*position(10)+position(1));
-BidStock = aBot.StockDepth.bidLimitPrice(1);
-AskStock = aBot.StockDepth.askLimitPrice(1);
 
-BidCall = aBot.Call1000Depth.bidLimitPrice(1);
-AskCall = aBot.Call1000Depth.askLimitPrice(1);
-BidPut = aBot.Put1000Depth.bidLimitPrice(1);
-AskPut = aBot.Put1000Depth.askLimitPrice(1);
-
-if position(11)<=0,
-    OptionValueP=AskPut*position(11);
-elseif position(11)>0,
-    OptionValueP=BidPut*position(11);
-end
-if position(10)<=0,
-    OptionValue=AskCall*position(10);
-elseif position(10)>0,
-    OptionValue=BidCall*position(10);
-end
-if position(1)<=0,
-    StockValue=AskStock*position(1);
-elseif position(1)>0,
-    StockValue=BidStock*position(1);
-end
 %Profit=StockValue+OptionValue+OptionValueP+sum(value);
 Limitpricevec=zeros(10,1);
 for i=1:length(aBot.myStrikeVec),
