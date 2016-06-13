@@ -140,15 +140,18 @@ classdef TradingRobot < AutoTrader
 %                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
 %                 end
 %             end
-            
-            if sum(TimePoint/100 == linspace(0,1000,1001))==1,
-                TimePoint
-            end
-            
+%             
+%             if sum(TimePoint/100 == linspace(0,1000,1001))==1,
+%                 TimePoint
+%             end
+            timeFactor = 1-(TimePoint / 17000);
             for i=1:length(aBot.myStrikeVec),
                 myStrike=aBot.myStrikeVec(i);
-                CallPutParityMark(aBot,myStrike);
+                pcBram(aBot,myStrike);
+%                 CallPutParityMark(aBot,myStrike,timeFactor);
+
             end
+            
             %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
             %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
             %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);

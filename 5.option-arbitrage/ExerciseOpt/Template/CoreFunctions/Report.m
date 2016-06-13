@@ -45,8 +45,8 @@ table(position,value,'RowNames',assets)
 Payments = length(aTrades.ISIN);
 PaymentsStock = sum(strcmp(aTrades.ISIN,'ING'));
 PaymentsOption = length(aBot.ownTrades.volume)-PaymentsStock;
-Deltapos = round(nansum(aBot.Delta(end,:).*transpose(Callpositions))+position(1));
-Gammapos = round(Gamma(aBot,10,aBot.Time(end),1)*position(10)+position(1));
+% Deltapos = round(nansum(aBot.Delta(end,:).*transpose(Callpositions))+position(1));
+% Gammapos = round(Gamma(aBot,10,aBot.Time(end),1)*position(10)+position(1));
 
 %Profit=StockValue+OptionValue+OptionValueP+sum(value);
 Limitpricevec=zeros(10,1);
@@ -61,35 +61,35 @@ for i=1:length(aBot.myStrikeVec),
 end
 
 Premium=sum(value(1:16));
-PrePremium=-sum(Callpositions.*Limitpricevec);
-PremiumLoss=Premium-PrePremium;
-CashAlt=sum(value)+PrePremium;
+% PrePremium=-sum(Callpositions.*Limitpricevec);
+%PremiumLoss=Premium-PrePremium;
+%CashAlt=sum(value)+PrePremium;
 
-ProfitVec=zeros(length(aBot.myStrikeVec),1);
-for i=1:length(aBot.myStrikeVec),
-    myStrike = aBot.myStrikeVec(i);
-    myOptionDepth = OptionDepth(aBot,myStrike,1);
-    if isempty(myOptionDepth.bidLimitPrice)==0,
-        ProfitVec(i)= myOptionDepth.bidLimitPrice(1)*Callpositions(i);
-    elseif isempty(myOptionDepth.bidLimitPrice)==1,
-        ProfitVec(i)= 0;
-    end
-end
+% ProfitVec=zeros(length(aBot.myStrikeVec),1);
+% for i=1:length(aBot.myStrikeVec),
+%     myStrike = aBot.myStrikeVec(i);
+%     myOptionDepth = OptionDepth(aBot,myStrike,1);
+%     if isempty(myOptionDepth.bidLimitPrice)==0,
+%         ProfitVec(i)= myOptionDepth.bidLimitPrice(1)*Callpositions(i);
+%     elseif isempty(myOptionDepth.bidLimitPrice)==1,
+%         ProfitVec(i)= 0;
+%     end
+% end
 
-Profit=sum(value)+sum(ProfitVec)+aBot.StockDepth.askLimitPrice(1)*position(1);
+%Profit=sum(value)+sum(ProfitVec)+aBot.StockDepth.askLimitPrice(1)*position(1);
 
 
 fprintf('Payments: %d\n',Payments);
 fprintf('Payments Stock: %d\n',PaymentsStock);
 fprintf('Payments Options: %d\n',PaymentsOption);
-fprintf('Delta position: %d\n',Deltapos);
-fprintf('Gamma position: %d\n',Gammapos);
+% fprintf('Delta position: %d\n',Deltapos);
+% fprintf('Gamma position: %d\n',Gammapos);
 fprintf('Premium (end prices): %f\n',Premium);
-fprintf('Premium (start prices): %f\n',PrePremium);
-fprintf('Premium change: %f\n',PremiumLoss);
+%fprintf('Premium (start prices): %f\n',PrePremium);
+%fprintf('Premium change: %f\n',PremiumLoss);
 fprintf('Cash Position before unwind: %f\n',sum(value));
 %fprintf('Cash Altering due to hedging: %f\n',CashAlt);
-fprintf('Cash Position after unwind: %f\n',Profit);
+%fprintf('Cash Position after unwind: %f\n',Profit);
 fprintf('Sent orders: %d\n',length(aBot.sentOrders.volume));
 fprintf('Accepted Orders: %d\n',length(aBot.acceptedOrders.volume));
 fprintf('Own Trades: %d\n',length(aBot.ownTrades.volume));
