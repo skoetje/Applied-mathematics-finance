@@ -141,7 +141,7 @@ classdef TradingRobot < AutoTrader
                 end
             end
             
-            if sum(TimePoint/100 == linspace(0,100,101))==1,
+            if sum(TimePoint/100 == linspace(0,1000,1001))==1,
                 TimePoint
             end
             

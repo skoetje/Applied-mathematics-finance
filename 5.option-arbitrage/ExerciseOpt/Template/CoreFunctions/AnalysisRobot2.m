@@ -1,8 +1,18 @@
-classdef AnalysisRobot < AutoTrader
+classdef AnalysisRobot2 < AutoTrader
     properties
-        Time
+        %TradeTimes
+        TradeTimes
+        
+        
+        %Saving Spots
+        SpotHistory
+        AskHistory
+        BidHistory
+        CallDeltaPos
+               
+        
+        %Depths to be loaded in
         StockDepth
-        myStrikeVec
         
         Call800Depth
         Call900Depth
@@ -53,16 +63,32 @@ classdef AnalysisRobot < AutoTrader
         Put1200Struct
         Put1400Struct
         
+        %Time for the unwind function
+        Time
+        Call1000OptionVec
+        Call1000OptionVecV
+        
+        %Savings for plotting
+        TotalStock
+        DeltaPositionVec
+        
         CallDeltaVec
         PutDeltaVec
         CallGammaVec
         PutGammaVec
+        
+        StartDeltas
+        DeltaConstantG
+        Gammas
+        myStrikeVec
     end
 
     methods
         function HandleDepthUpdate(aBot, ~, aDepth)
-            aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+1;
-            TimePoint=aBot.Time(end);
+            if length(aBot.Time)==0,
+                aBot.Time(1)=1;
+            end
+            TimePoint=aBot.Time(end);  
             
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
@@ -81,17 +107,26 @@ classdef AnalysisRobot < AutoTrader
                 case 'ING20160916CALL1025'; aBot.Call1025Depth = aDepth;
                 case 'ING20160916PUT1050'; aBot.Put1050Depth = aDepth;
                 case 'ING20160916CALL1050'; aBot.Call1050Depth = aDepth;
-                case 'ING20160916PUT1100'; aBot.Put1100Depth = aDepth;
+                case 'ING20160916CallDeltaVecAFTPUT1100'; aBot.Put1100Depth = aDepth;
                 case 'ING20160916CALL1100'; aBot.Call1100Depth = aDepth;
                 case 'ING20160916PUT1200'; aBot.Put1200Depth = aDepth;
                 case 'ING20160916CALL1200'; aBot.Call1200Depth = aDepth;
                 case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
+                        
+            %aBot.OptionBidHistory(TimePoint)=1;
             
+            aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
+            aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);
+            
+            %Initializing       
+            if sum(TimePoint/100 == linspace(0,100,101))==1,
+                TimePoint
+            end
             %We also record the Deltas and gammas
-            aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
-            aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
+            aBot.CallDeltaVec(TimePoint)=DeltaStart(aBot,10,TimePoint,1);
+            aBot.PutDeltaVec(TimePoint)=DeltaStart(aBot,10,TimePoint,0);
             aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
             aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
             
@@ -283,6 +318,7 @@ classdef AnalysisRobot < AutoTrader
                     aBot.Put1400Struct(TimePoint,4)=myOptionBidPrice;              
                 end
             end
+            aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+2;
         end
     end
 end
