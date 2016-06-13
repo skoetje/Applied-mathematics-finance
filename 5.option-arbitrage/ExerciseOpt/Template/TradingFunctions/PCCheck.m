@@ -94,9 +94,5 @@ if isempty(aBot.Put1000Depth.askVolume)==0,
             end
         end
 end
-
-
-
-
 end
  
