@@ -5,9 +5,11 @@ myExpiry=((169000-aTime)+3600*24*daysact('13-jun-2016',  '16-sep-2016'))/(3600*2
 
 while any(value-aOption > 1e-9)
     [call, put] = BlackScholes(aSpot,aStrike,myExpiry,0,sigma);
-    value(aIsPut) = put(aIsPut);
-    value(~aIsPut) = call(~aIsPut);
-    
+    if aIsPut==1,
+        value=call;
+    else
+        value=put;
+    end
     sigma=sigma+(aOption-value)./Vega(aSpot,aStrike,aTime,0,sigma);
 end
 Volatility=sigma;
