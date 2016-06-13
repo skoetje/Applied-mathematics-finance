@@ -1,4 +1,4 @@
-function PCCheck(aBot,timeFactor)
+function PCCheck(aBot,aStrike)
 % Checks to find riskless money opportunities
 % 
 
@@ -29,14 +29,14 @@ if isempty(aBot.Call1000Depth)==0 && isempty(aBot.Put1000Depth)==0 && isempty(aB
         if myCallAskP+myStrike<myPutBidP+mySpotBidP,        
             if myCallAskV>0 && myPutBidV >0, 
             aBot.TotalStock(end+1)=mySpotBidV*-1;
-            aBot.SendNewOrder(myCallAskP, timeFactor*myCallAskV,  1, {aBot.Call1000Depth.ISIN}, {'IMMEDIATE'}, 0);
-            aBot.SendNewOrder(myPutBidP, timeFactor*myPutBidV,  -1, {aBot.Put1000Depth.ISIN}, {'IMMEDIATE'}, 0);
+            aBot.SendNewOrder(myCallAskP, myCallAskV,  1, {aBot.Call1000Depth.ISIN}, {'IMMEDIATE'}, 0);
+            aBot.SendNewOrder(myPutBidP, myPutBidV,  -1, {aBot.Put1000Depth.ISIN}, {'IMMEDIATE'}, 0);
            % aBot.SendNewOrder(mySpotBidP, mySpotBidV,  -1, {'ING'}, {'IMMEDIATE'}, 0);
             end
             % Update book
             aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1)-mySpotBidV;
-            aBot.Call1000Depth.askVolume(1) = aBot.Call1000Depth.askVolume(1)-(myCallAskV*timeFactor);
-            aBot.Put1000Depth.bidVolume(1) = aBot.Put1000Depth.bidVolume(1)-(myPutBidV*timeFactor);
+            aBot.Call1000Depth.askVolume(1) = aBot.Call1000Depth.askVolume(1)-(myCallAskV);
+            aBot.Put1000Depth.bidVolume(1) = aBot.Put1000Depth.bidVolume(1)-(myPutBidV);
         end
     end
  
@@ -52,15 +52,15 @@ if isempty(aBot.Call1000Depth)==0 && isempty(aBot.Put1000Depth)==0 && isempty(aB
         if myCallBidP+myStrike>myPutAskP+mySpotAskP,       
             if myCallBidV>0 && myPutAskV >0,
             aBot.TotalStock(end+1)=mySpotAskV*1;
-            aBot.SendNewOrder(myCallBidP, timeFactor*myCallBidV,  -1, {aBot.Call1000Depth.ISIN}, {'IMMEDIATE'}, 0);
-            aBot.SendNewOrder(myPutAskP, timeFactor*myPutAskV,  1, {aBot.Put1000Depth.ISIN}, {'IMMEDIATE'}, 0);
+            aBot.SendNewOrder(myCallBidP, myCallBidV,  -1, {aBot.Call1000Depth.ISIN}, {'IMMEDIATE'}, 0);
+            aBot.SendNewOrder(myPutAskP, myPutAskV,  1, {aBot.Put1000Depth.ISIN}, {'IMMEDIATE'}, 0);
             %aBot.SendNewOrder(mySpotAskP, mySpotAskV,  1, {'ING'}, {'IMMEDIATE'}, 0);
             end
  
             % Update book
             aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1)-mySpotAskV;
-            aBot.Call1000Depth.bidVolume(1) = aBot.Call1000Depth.bidVolume(1)-(myCallBidV*timeFactor);
-            aBot.Put1000Depth.askVolume(1) = aBot.Put1000Depth.askVolume(1)-(myPutAskV*timeFactor);
+            aBot.Call1000Depth.bidVolume(1) = aBot.Call1000Depth.bidVolume(1)-(myCallBidV);
+            aBot.Put1000Depth.askVolume(1) = aBot.Put1000Depth.askVolume(1)-(myPutAskV);
         end
     end
 end

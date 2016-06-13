@@ -149,14 +149,13 @@ classdef TradingRobot < AutoTrader
             % 2) Call-Put Parity
             for i=1:length(aBot.myStrikeVec),
                 myStrike=aBot.myStrikeVec(i);
-                %myStrike=14;
                 %pcBram(aBot,myStrike);
                 CallPutParityMark(aBot,myStrike);
             end
             
                         
             % 3) Unwinding
-            Unwind(aBot,TimePoint);
+            %Unwind(aBot,TimePoint);
             
             
             

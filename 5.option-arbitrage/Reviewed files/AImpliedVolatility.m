@@ -1,4 +1,4 @@
-function Volatility=ImpliedVolatility(aSpot,aStrike,aTime,aOption,aIsPut)
+function Volatility=AImpliedVolatility(aSpot,aStrike,aTime,aOption,aIsPut)
 sigma=0.2;
 value=100 + aOption;
 

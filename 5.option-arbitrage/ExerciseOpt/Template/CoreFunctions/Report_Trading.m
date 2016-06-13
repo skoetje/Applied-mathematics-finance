@@ -77,19 +77,19 @@ end
 
 
 %  Create Table
-Position=position;
-Cash=value;
-Unwind=myUnwindCosts;
-Profit=value+myUnwindCosts;
+Position=round(position);
+Cash=round(value);
+Unwind=round(myUnwindCosts);
+Profit=round(value+myUnwindCosts);
 ING = {'ING'};
 assets = cat(1,ING,GetAllOptionISINs());
-table(Position,Cash,Unwind,round(Profit),'RowNames',assets)
+table(Position,Cash,Unwind,Profit,'RowNames',assets)
 
 % Specific Prints
 fprintf('Amount of stock trades: %d\n',length(find(strcmp(aTrades.ISIN,'ING'))));
 fprintf('Amount of option trades: %d\n',length(aTrades.ISIN)-length(find(strcmp(aTrades.ISIN,'ING'))));
-fprintf('Cash position (end): %d\n',sum(value));
-fprintf('Cash position (after unwind): %d\n',sum(value)+nansum(myUnwindCosts));
+fprintf('Cash position (end): %d\n',round(sum(value)));
+fprintf('Cash position (after unwind): %d\n',round(sum(value)+nansum(myUnwindCosts)));
 fprintf('Sent orders: %d\n',length(aBot.sentOrders.volume));
 fprintf('Accepted Orders: %d\n',length(aBot.acceptedOrders.volume));
 fprintf('Own Trades: %d\n',length(aBot.ownTrades.volume));
