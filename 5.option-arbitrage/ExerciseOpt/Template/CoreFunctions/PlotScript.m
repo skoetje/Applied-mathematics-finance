@@ -1,16 +1,15 @@
 %% Preambule
 Timevec=1:length(myTradingRobot.StockOfferPrice);
 
-%% Plot Deltas
-subplot(2,1,1)
+%% Plot Call Deltas
 hold on
-scatter(myTradingRobot.Time,myTradingRobot.CallDeltaVec)
+plot(myTradingRobot.Time,myTradingRobot.CallDeltaVec)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Call Delta','FontSize',15)
 set(gca,'FontSize',13)
 
-subplot(2,1,2)
+%% Plot Put Delta
 hold on
 scatter(myTradingRobot.Time,myTradingRobot.PutDeltaVec)
 hold off
@@ -37,13 +36,13 @@ set(gca,'FontSize',13)
 
 %% Plot Ask/Bid stockprices
 hold on
-plot(Timevec,myTradingRobot.StockOfferPrice,'-','Color','blue','LineWidth',3)
-plot(Timevec,myTradingRobot.StockBidPrice,'-','Color','red','LineWidth',3)
-plot(Timevec,Valuate(myTradingRobot.StockOfferPrice,myTradingRobot.StockOfferVol,myTradingRobot.StockBidPrice,myTradingRobot.StockBidVol,0.01),'-','Color','green','LineWidth',3)
+plot(Timevec,Valuate(myTradingRobot.StockOfferPrice,myTradingRobot.StockOfferVol,myTradingRobot.StockBidPrice,myTradingRobot.StockBidVol,0.01),'-','Color','red','LineWidth',2)
+plot(Timevec,myTradingRobot.StockOfferPrice,'-','Color','black','LineWidth',2)
+plot(Timevec,myTradingRobot.StockBidPrice,'-','Color','blue','LineWidth',2)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Price of Stock','FontSize',15)
-legend('Ask','Bid','Valuation')
+legend('Valuation','Ask','Bid')
 set(gca,'FontSize',13)
 
 %% Plot Ask/Bid stockvolumes
