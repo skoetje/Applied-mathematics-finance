@@ -84,6 +84,7 @@ classdef AnalysisRobot_final < AutoTrader
             end
             
             %We also record the Deltas and gammas
+<<<<<<< HEAD
             for i=1:10
                 myStrike=myStrikeVector(i);
                 aBot.CallDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
@@ -94,6 +95,18 @@ classdef AnalysisRobot_final < AutoTrader
                 aBot.PutVegas(TimePoint,i)=Vega(aBot,myStrike,TimePoint,0);
             end
             
+=======
+%             for i=1:10
+%                 myStrike=myStrikeVector(i);
+%                 aBot.CallDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
+%                 aBot.CallGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+%                 aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
+%                 aBot.PutDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,0);
+%                 aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
+%                 aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
+%             end
+%             
+>>>>>>> 6c4761e67bd8c19956afccc2632c53e7bd7134de
             % Recording Stock
             myStock=aBot.StockDepth;
             myStockAskVolume=NaN;
