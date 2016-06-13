@@ -24,7 +24,7 @@ for myBoolean=0:1,
                         if myOptionPrice >= 1.25*nanmean(aBot.ownTrades.price(myOptionSells))-nanmean(aBot.ownTrades.price(myOptionSells))*((aTime-myThreshold)/(myFeedLength-myThreshold))^2,
                             myOptionDepth.bidVolume = myOptionDepth.bidVolume - myOptionVolume;
                             aBot.TradeTimes(length(aBot.TradeTimes)+1)=aTime;
-                            aBot.SendNewOrder(myOptionPrice, myOptionVolume,  -1, {myOptionDepth.ISIN}, {'IMMEDIATE'}, aTime*10000);
+                            aBot.SendNewOrder(myOptionPrice, myOptionVolume,  -1, {myOptionDepth.ISIN}, {'IMMEDIATE'}, -aTime);
                         end
                     end        
                     if isempty(myOptionDepth.askVolume)==0 && myOptionPosition < 0,
@@ -34,7 +34,7 @@ for myBoolean=0:1,
                         if myOptionPrice < 0.75*nanmean(aBot.ownTrades.price(myOptionBuys))+nanmean(aBot.ownTrades.price(myOptionBuys))*((aTime-myThreshold)/(myFeedLength-myThreshold))^2,
                             myOptionDepth.askVolume = myOptionDepth.askVolume - myOptionVolume;
                             aBot.TradeTimes(length(aBot.TradeTimes)+1)=aTime;
-                            aBot.SendNewOrder(myOptionPrice, myOptionVolume,  1, {myOptionDepth.ISIN}, {'IMMEDIATE'}, aTime*10000);
+                            aBot.SendNewOrder(myOptionPrice, myOptionVolume,  1, {myOptionDepth.ISIN}, {'IMMEDIATE'}, -aTime);
                         end
                     end
                 end

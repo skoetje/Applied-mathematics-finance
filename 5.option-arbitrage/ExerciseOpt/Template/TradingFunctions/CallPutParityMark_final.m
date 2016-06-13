@@ -22,19 +22,19 @@ if isempty(myCallOptionDepth)==0 && isempty(myPutOptionDepth)==0 && isempty(aBot
         myCallAskV=myCallOptionDepth.askVolume;
         myPutBidP=myPutOptionDepth.bidLimitPrice;
         myPutBidV=myPutOptionDepth.bidVolume;
-        mySpotBidP=aBot.StockDepth.bidLimitPrice(1);
-        mySpotAskP=aBot.StockDepth.askLimitPrice(1);
-        mySpotBidV=aBot.StockDepth.bidVolume(1);
-
-        if myCallAskP+myStrike<(myPutBidP+mySpotAskP)/1.0001 && myCallPosition<3000 && myPutPosition>-3000;
-            
+        myStockP=aBot.StockDepth.bidLimitPrice(1);
+        myStockV=aBot.StockDepth.bidVolume(1);
+        
+        if myCallAskP+myStrike<(myPutBidP+mySpotBidP)/1.0001 && myCallPosition<3000 && myPutPosition>-3000;
             % Update book
             myCallOptionDepth.askVolume = myCallOptionDepth.askVolume-myCallAskV;
             myPutOptionDepth.bidVolume = myPutOptionDepth.bidVolume-myPutBidV;
+            %aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1)-mySpotBidV;
             
             aBot.TotalStock(end+1)=mySpotBidV*-1;
-            aBot.SendNewOrder(myCallAskP, myCallAskV,  1, {myCallOptionDepth.ISIN}, {'IMMEDIATE'}, 1);
-            aBot.SendNewOrder(myPutBidP, myPutBidV,  -1, {myCallOptionDepth.ISIN}, {'IMMEDIATE'}, 2);
+            aBot.SendNewOrder(myCallAskP, myCallAskV,  1, {myCallOptionDepth.ISIN}, {'IMMEDIATE'}, 0);
+            aBot.SendNewOrder(myPutBidP, myPutBidV,  -1, {myCallOptionDepth.ISIN}, {'IMMEDIATE'}, 0);
+            %aBot.SendNewOrder(mySpotBidP, mySpotBidV,  -1, {'ING'}, {'IMMEDIATE'}, 0);
         end
     end
 
@@ -44,19 +44,19 @@ if isempty(myCallOptionDepth)==0 && isempty(myPutOptionDepth)==0 && isempty(aBot
         myCallBidV=myCallOptionDepth.bidVolume;
         myPutAskP=myPutOptionDepth.askLimitPrice;
         myPutAskV=myPutOptionDepth.askVolume;
-        mySpotBidP=aBot.StockDepth.bidLimitPrice(1);
         mySpotAskP=aBot.StockDepth.askLimitPrice(1);
         mySpotAskV=aBot.StockDepth.askVolume(1);
 
-        if myCallBidP+myStrike>(myPutAskP+mySpotBidP)*1.0001 && myPutPosition<3000 && myCallPosition>-3000;        
-            
+        if myCallBidP+myStrike>(myPutAskP+mySpotAskP)*1.0001 && myPutPosition<3000 && myCallPosition>-3000;        
             % Update book
             myCallOptionDepth.bidVolume = myCallOptionDepth.bidVolume-myCallBidV;
             myPutOptionDepth.askVolume = myPutOptionDepth.askVolume-myPutAskV;
+            %aBot.StockDepth.askVolume(1) = aBot.StockDepth.askVolume(1)-mySpotAskV;
             
             aBot.TotalStock(end+1)=mySpotAskV*1;
-            aBot.SendNewOrder(myCallBidP, myCallBidV,  -1, {myCallOptionDepth.ISIN}, {'IMMEDIATE'}, 3);
-            aBot.SendNewOrder(myPutAskP, myPutAskV,  1, {myPutOptionDepth.ISIN}, {'IMMEDIATE'}, 4);
+            aBot.SendNewOrder(myCallBidP, myCallBidV,  -1, {myCallOptionDepth.ISIN}, {'IMMEDIATE'}, 0);
+            aBot.SendNewOrder(myPutAskP, myPutAskV,  1, {myPutOptionDepth.ISIN}, {'IMMEDIATE'}, 0);
+            %aBot.SendNewOrder(mySpotAskP, mySpotAskV,  1, {'ING'}, {'IMMEDIATE'}, 0);
         end
     end
 end

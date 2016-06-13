@@ -3,7 +3,6 @@ classdef TradingRobot < AutoTrader
         %TradeTimes
         TradeTimes
         
-        
         %Saving Spots
         SpotHistory
         AskHistory
@@ -63,6 +62,7 @@ classdef TradingRobot < AutoTrader
                 aBot.Time(1)=1;
             end
             TimePoint=aBot.Time(end);  
+            aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
             
             %Switch between whether the depth concerns option or stock
             switch aDepth.ISIN
@@ -81,37 +81,39 @@ classdef TradingRobot < AutoTrader
                 case 'ING20160916CALL1025'; aBot.Call1025Depth = aDepth;
                 case 'ING20160916PUT1050'; aBot.Put1050Depth = aDepth;
                 case 'ING20160916CALL1050'; aBot.Call1050Depth = aDepth;
-                case 'ING20160916CallDeltaVecAFTPUT1100'; aBot.Put1100Depth = aDepth;
+                case 'ING20160916PUT1100'; aBot.Put1100Depth = aDepth;
                 case 'ING20160916CALL1100'; aBot.Call1100Depth = aDepth;
                 case 'ING20160916PUT1200'; aBot.Put1200Depth = aDepth;
                 case 'ING20160916CALL1200'; aBot.Call1200Depth = aDepth;
                 case 'ING20160916PUT1400'; aBot.Put1400Depth = aDepth;
                 case 'ING20160916CALL1400'; aBot.Call1400Depth = aDepth;
             end
-                        
-            aBot.BidHistory(TimePoint)=10.4;
+            
+            % Storing Stock depths to determine spot changes
+            aBot.BidHistory(TimePoint)=NaN;
             if isempty(aBot.StockDepth.bidLimitPrice)==0,
                 aBot.BidHistory(TimePoint)=aBot.StockDepth.bidLimitPrice(1);
             end
             
-            aBot.AskHistory(TimePoint)=10.4;
+            aBot.AskHistory(TimePoint)=NaN;
             if isempty(aBot.StockDepth.askLimitPrice)==0,
                 aBot.AskHistory(TimePoint)=aBot.StockDepth.askLimitPrice(1);
             end
             
-            aBot.SpotHistory(TimePoint)=10.4;
+            aBot.SpotHistory(TimePoint)=NaN;
             if isempty(aBot.StockDepth.bidLimitPrice)==0 && isempty(aBot.StockDepth.askLimitPrice)==0,
                 aBot.SpotHistory(TimePoint)=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
             end
-            
-            %aBot.OptionBidHistory(TimePoint)=1;
-            
             aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
-            myInitialAmount=round(1000/length(aBot.myStrikeVec));
-            %myISINs=GetAllOptionISINs;
-            aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);
+                        
             
-            %Initializing       
+            
+            
+            
+            % 1) Delta Hedging  
+%             aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
+%             myInitialAmount=round(1000/length(aBot.myStrikeVec));
+%             aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);     
 %             for i=1:length(aBot.myStrikeVec),
 %                 myStrike=aBot.myStrikeVec(i);
 %                 if isempty(OptionDepth(aBot,myStrike,1))==0;
@@ -141,25 +143,28 @@ classdef TradingRobot < AutoTrader
 %                 end
 %             end
             
-            if sum(TimePoint/100 == linspace(0,1000,1001))==1,
-                TimePoint
-            end
-            
+
+
+
+            % 2) Call-Put Parity
             for i=1:length(aBot.myStrikeVec),
                 myStrike=aBot.myStrikeVec(i);
                 CallPutParityMark(aBot,myStrike);
             end
-            %aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
-            %aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
-            %aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
-            %Rehedger(aBot,TimePoint)
-            %TryArbitrage(aBot);
-            %DeltaHedge(aBot,TimePoint);
-            %DeltaHedge_constantDelta(aBot,TimePoint);
-            %aBot.GammaHedge();
-            %aBot.VegaHedge();
-            Unwind(aBot,TimePoint);
+            
+            
+                        
+            % 3) Unwinding
+            %Unwind(aBot,TimePoint);
+            
+            
+            
+            
+            % End
             aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+2;
+            if sum(TimePoint/100 == linspace(0,1000,1001))==1,
+                TimePoint
+            end
         end
     end
 end

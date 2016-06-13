@@ -29,12 +29,7 @@ classdef AnalysisRobot_final < AutoTrader
         StockBidPrices
         StockAskVolumes
         StockBidVolumes
-        
-        %OptionAskPrices
-        %OptionBidPrices
-        %OptionAskVolumes
-        %OptionBidVolumes
-                
+                        
         CallOptionAskPrices
         CallOptionBidPrices
         CallOptionAskVolumes
@@ -96,7 +91,7 @@ classdef AnalysisRobot_final < AutoTrader
                 aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
                 aBot.PutDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,0);
                 aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
-                aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
+                aBot.PutVegas(TimePoint,i)=Vega(aBot,myStrike,TimePoint,0);
             end
             
             % Recording Stock
@@ -156,11 +151,6 @@ classdef AnalysisRobot_final < AutoTrader
                             myOptionVolatility = ImpliedVolatility(myStockSpot,myStrike,TimePoint,myOptionSpot,j-1);
                         end
                     end
-
-                    %aBot.OptionAskPrices(TimePoint,2*(i-1)+j)=myOptionAskPrice;
-                    %aBot.OptionBidPrices(TimePoint,2*(i-1)+j)=myOptionBidPrice;
-                    %aBot.OptionAskVolumes(TimePoint,2*(i-1)+j)=myOptionAskVolume;
-                    %aBot.OptionBidVolumes(TimePoint,2*(i-1)+j)=myOptionBidVolume;
                     
                     if j==1,
                         aBot.CallOptionAskPrices(TimePoint,i)=myOptionAskPrice;
