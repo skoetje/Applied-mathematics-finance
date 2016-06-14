@@ -9,7 +9,7 @@ myExchange = CreateExchangeOpt();
 
 myFeedPublisher = FeedPublisher();
 myExchange.RegisterAutoTrader(myFeedPublisher);
-myFeedPublisher.StartAutoTrader(myExchange);
+myFeedPublisher.StartAutoT rader(myExchange);
 
 myOptionsQuoter = OptionsQuoter();
 myExchange.RegisterAutoTrader(myOptionsQuoter);
@@ -19,6 +19,6 @@ myTradingRobot = AnalysisRobot_final();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
-myFeedPublisher.StartVeryShortFeed(myFeed);
+myFeedPublisher.StartFeed(myFeed);
 
 Report_Analysis(myTradingRobot);
