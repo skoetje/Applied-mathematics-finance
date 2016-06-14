@@ -17,25 +17,25 @@ myAverageVegas(1)=0;
 % Gathering from properties of the Tradingrobot
 k=0;
 p=0;
-% for i=1:20,
-%     if mod(i,2)==1,
-%         k=k+1;
-%         myAverageDeltas(i+1)=nanmean(aBot.CallDeltas(:,k));
-%         myAverageGammas(i+1)=nanmean(aBot.CallGammas(:,k));
-%         myAverageAskPrices(i+1)=nanmean(aBot.CallOptionAskPrices(:,k));
-%         myAverageBidPrices(i+1)=nanmean(aBot.CallOptionBidPrices(:,k));
-%         myAverageImpVols(i+1)=nanmean(aBot.CallOptionVolatility(:,k));
-%         myAverageVegas(i+1)=nanmean(aBot.CallVegas(:,k));
-%     elseif mod(i,2)==0,
-%         p=p+1;
-%         myAverageDeltas(i+1)=nanmean(aBot.PutDeltas(:,p));
-%         myAverageGammas(i+1)=nanmean(aBot.PutGammas(:,p));
-%         myAverageAskPrices(i+1)=nanmean(aBot.PutOptionAskPrices(:,p));
-%         myAverageBidPrices(i+1)=nanmean(aBot.PutOptionBidPrices(:,p));
-%         myAverageImpVols(i+1)=nanmean(aBot.PutOptionVolatility(:,k));
-%         myAverageVegas(i+1)=nanmean(aBot.PutVegas(:,k));
-%     end
-% end
+for i=1:20,
+    if mod(i,2)==1,
+        k=k+1;
+        %myAverageDeltas(i+1)=nanmean(aBot.CallDeltas(:,k));
+        %myAverageGammas(i+1)=nanmean(aBot.CallGammas(:,k));
+        myAverageAskPrices(i+1)=nanmean(aBot.CallOptionAskPrices(:,k));
+        myAverageBidPrices(i+1)=nanmean(aBot.CallOptionBidPrices(:,k));
+        myAverageImpVols(i+1)=nanmean(aBot.CallOptionVolatility(:,k));
+        %myAverageVegas(i+1)=nanmean(aBot.CallVegas(:,k));
+    elseif mod(i,2)==0,
+        p=p+1;
+        %myAverageDeltas(i+1)=nanmean(aBot.PutDeltas(:,p));
+        %myAverageGammas(i+1)=nanmean(aBot.PutGammas(:,p));
+        myAverageAskPrices(i+1)=nanmean(aBot.PutOptionAskPrices(:,p));
+        myAverageBidPrices(i+1)=nanmean(aBot.PutOptionBidPrices(:,p));
+        myAverageImpVols(i+1)=nanmean(aBot.PutOptionVolatility(:,k));
+        %myAverageVegas(i+1)=nanmean(aBot.PutVegas(:,k));
+    end
+end
 
 % Rounding to look nice
 % Delta_m=round(myAverageDeltas,2);
@@ -52,8 +52,8 @@ for i=1:21,
     end
 end
 % 
-% % Creation of the table
-% ING = {'ING'};
-% assets = cat(1,ING,GetAllOptionISINs());
-% table(Delta_m,Gamma_m,Sigma_m,Ask_m,Bid_m,Vega_m,'RowNames',assets)
+% Creation of the table
+ING = {'ING'};
+assets = cat(1,ING,GetAllOptionISINs());
+table(Sigma_m,Ask_m,Bid_m,'RowNames',assets)
 end
