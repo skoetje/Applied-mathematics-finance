@@ -149,11 +149,11 @@ classdef AnalysisRobot_final < AutoTrader
                             myOptionSpot = (myOptionBidPrice+myOptionAskPrice)/2;
                             myStockSpot= (myStockAskPrice+myStockBidPrice)/2;
                             %myOptionVolatility = ImpliedVolatility(myStockSpot,myStrike,TimePoint,myOptionSpot,j-1);
-                            myExpiry = ((169000-TimePoint)+3600*24*daysact('13-jun-2016',  '16-sep-2016'))/(3600*24*252);
+                            %myExpiry = ((169000-TimePoint)+3600*24*daysact('13-jun-2016',  '16-sep-2016'))/(3600*24*252);
                             if j==1,
-                            myOptionVolatility = blsimpv(myStockSpot,myStrike,myExpiry,0,myOptionSpot,1,0,1e-9,true);
+                            myOptionVolatility = blsimpv(myStockSpot,myStrike,TimePoint,0,myOptionSpot,1,0,1e-9,true);
                             elseif j==2,
-                            myOptionVolatility = blsimpv(myStockSpot,myStrike,myExpiry,0,myOptionSpot,1,0,1e-9,false);    
+                            myOptionVolatility = blsimpv(myStockSpot,myStrike,TimePoint,0,myOptionSpot,1,0,1e-9,false);    
                             end
                             
                         end
