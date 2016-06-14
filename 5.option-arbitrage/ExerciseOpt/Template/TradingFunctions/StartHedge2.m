@@ -15,10 +15,11 @@ if round(myBidStockV/myCallDelta)<=myInitialAmount && sum(strcmp(myOptionDepth.I
     if myBidStockP>nanmean(aBot.BidHistory(1:end)) && myOptionPrice<10.0 && myOptionAmount~=0,
         aBot.Tester1=DeltaStart(aBot,myStrike,aTime,1);
         myOptionDepth.askVolume = myOptionDepth.askVolume  - myOptionAmount;
+        aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
+        
         aBot.TradeTimes(length(aBot.TradeTimes)+1)=aTime;
         aBot.SendNewOrder(myOptionPrice, myOptionAmount,  1, {myOptionDepth.ISIN}, {'IMMEDIATE'}, aTime);
         
-        aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
         aBot.TradeTimes(length(aBot.TradeTimes)+1)=aTime;
         aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, aTime);
     end
@@ -33,10 +34,11 @@ if round(myBidStockV/myCallDelta)>myInitialAmount && sum(strcmp(myOptionDepth.IS
     if myBidStockP>nanmean(aBot.BidHistory(1:end)) && myOptionPrice<10.0,
         aBot.Tester2=DeltaStart(aBot,myStrike,aTime,1);
         myOptionDepth.askVolume = myOptionDepth.askVolume  - myOptionAmount;
+        aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
+        
         aBot.TradeTimes(length(aBot.TradeTimes)+1)=aTime;
         aBot.SendNewOrder(myOptionPrice, myOptionAmount,  1, {myOptionDepth.ISIN}, {'IMMEDIATE'}, aTime);
 
-        aBot.StockDepth.bidVolume(1) = aBot.StockDepth.bidVolume(1) - myBidStockV;
         aBot.TradeTimes(length(aBot.TradeTimes)+1)=aTime;
         aBot.SendNewOrder(myBidStockP, myBidStockV,  -1, {'ING'}, {'IMMEDIATE'}, aTime);
     end

@@ -1,9 +1,10 @@
 %% Preambule
-Timevec=1:length(myTradingRobot.StockOfferPrice);
+Timevec=1:length(myTradingRobot.StockAskVolumes);
+myStrikeVector=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
 
 %% Plot Call Deltas
 hold on
-plot(myTradingRobot.Time,myTradingRobot.CallDeltaVec)
+plot(myTradingRobot.Time,myTradingRobot.CallDeltas)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Call Delta','FontSize',15)
@@ -11,7 +12,7 @@ set(gca,'FontSize',13)
 
 %% Plot Put Delta
 hold on
-scatter(myTradingRobot.Time,myTradingRobot.PutDeltaVec)
+plot(myTradingRobot.Time,myTradingRobot.PutDeltas)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Put Delta','FontSize',15)
@@ -20,7 +21,7 @@ set(gca,'FontSize',13)
 %% Plot Gamma
 subplot(2,1,1)
 hold on
-scatter(myTradingRobot.Time,myTradingRobot.CallGammaVec)
+plot(myTradingRobot.Time,myTradingRobot.CallGammas)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Call Gamma','FontSize',15)
@@ -28,7 +29,7 @@ set(gca,'FontSize',13)
 
 subplot(2,1,2)
 hold on
-scatter(myTradingRobot.Time,myTradingRobot.PutGammaVec)
+plot(myTradingRobot.Time,myTradingRobot.PutGammas)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Put Gamma','FontSize',15)
@@ -36,9 +37,9 @@ set(gca,'FontSize',13)
 
 %% Plot Ask/Bid stockprices
 hold on
-plot(Timevec,Valuate(myTradingRobot.StockOfferPrice,myTradingRobot.StockOfferVol,myTradingRobot.StockBidPrice,myTradingRobot.StockBidVol,0.01),'-','Color','red','LineWidth',2)
-plot(Timevec,myTradingRobot.StockOfferPrice,'-','Color','black','LineWidth',2)
-plot(Timevec,myTradingRobot.StockBidPrice,'-','Color','blue','LineWidth',2)
+plot(Timevec,Valuate(myTradingRobot.StockAskPrices,myTradingRobot.StockAskVolumes,myTradingRobot.StockBidPrices,myTradingRobot.StockBidVolumes,0.01),'-','Color','red','LineWidth',2)
+plot(Timevec,myTradingRobot.StockAskPrices,'-','Color','black','LineWidth',2)
+plot(Timevec,myTradingRobot.StockBidPrices,'-','Color','blue','LineWidth',2)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Price of Stock','FontSize',15)
@@ -47,77 +48,42 @@ set(gca,'FontSize',13)
 
 %% Plot Ask/Bid stockvolumes
 hold on
-plot(Timevec,myTradingRobot.StockOfferVol,'-','Color','blue','LineWidth',3)
-plot(Timevec,myTradingRobot.StockBidVol,'-','Color','red','LineWidth',3)
+plot(Timevec,myTradingRobot.StockAskVolumes,'-','Color','blue','LineWidth',3)
+plot(Timevec,myTradingRobot.StockBidVolumes,'-','Color','red','LineWidth',3)
 hold off
 xlabel('Time','FontSize',15)
 ylabel('Volume of Stock','FontSize',15)
 legend('Ask','Bid')
 set(gca,'FontSize',13)
 
-%% Plot Fraction of Bid wrt total
-hold on
-plot(Timevec,myTradingRobot.StockOfferVol./(myTradingRobot.StockOfferVol+myTradingRobot.StockBidVol),'-','Color','blue','LineWidth',3)
-hold off
-xlabel('Time','FontSize',15)
-ylabel('Fraction of first layer that is offered','FontSize',15)
-set(gca,'FontSize',13)
-
 %% Plot optionprices
+myOptionPrices=(myTradingRobot.CallOptionBidPrices+myTradingRobot.CallOptionAskPrices)/2;
+myStrikeVector=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
 hold on
-plot(Timevec,myTradingRobot.Call1000Struct(:,2),'-','Color','blue','LineWidth',3)
-plot(Timevec,myTradingRobot.Call1000Struct(:,4),'-','Color','green','LineWidth',3)
-plot(Timevec,myTradingRobot.Put1000Struct(:,2),'-','Color','red','LineWidth',3)
-plot(Timevec,myTradingRobot.Put1000Struct(:,4),'-','Color','black','LineWidth',3)
+for i=1:10
+    plot(myTradingRobot.Time,myOptionPrices,'-','LineWidth',3)
+end
 hold off
 xlabel('Time')
 ylabel('Price of Option')
 xlabel('Time','FontSize',15)
 ylabel('Price of Option','FontSize',15)
-legend('Call offer','Call bid','Put offer','Put bid')
-set(gca,'FontSize',13)
-
-%% Plot optionprices SPREAD
-hold on
-plot(Timevec,myTradingRobot.Call800Struct(:,2),'-','Color','green','LineWidth',3)
-plot(Timevec,myTradingRobot.Call1000Struct(:,2),'-','Color','blue','LineWidth',3)
-plot(Timevec,myTradingRobot.Call1400Struct(:,2),'-','Color','magenta','LineWidth',3)
-plot(Timevec,myTradingRobot.Put800Struct(:,2),'-','Color','yellow','LineWidth',3)
-plot(Timevec,myTradingRobot.Put1000Struct(:,2),'-','Color','red','LineWidth',3)
-plot(Timevec,myTradingRobot.Put1400Struct(:,2),'-','Color','black','LineWidth',3)
-hold off
-xlabel('Time')
-ylabel('Price of Option')
-xlabel('Time','FontSize',15)
-ylabel('Price of Option','FontSize',15)
-legend('Call 800','Call 1000', 'Call 1400', 'Put 800', 'Put 1000', 'Put 1400')
-set(gca,'FontSize',13)
-
-%% Plot optionvolumes
-hold on
-plot(Timevec,myTradingRobot.Call800Struct(:,1),'-','Color','blue','LineWidth',3)
-plot(Timevec,myTradingRobot.Call800Struct(:,3),'-','Color','green','LineWidth',3)
-plot(Timevec,myTradingRobot.Put800Struct(:,1),'-','Color','red','LineWidth',3)
-plot(Timevec,myTradingRobot.Put800Struct(:,3),'-','Color','black','LineWidth',3)
-hold off
-xlabel('Time','FontSize',15)
-ylabel('Volume of Stock','FontSize',15)
-legend('Call offer','Call bid','Put offer','Put bid')
+legend('Strike 8', 'Strike 9', 'Strike 9.5', 'Strike 9.75', 'Strike 10', 'Strike 10.25', 'Strike 10.5', 'Strike 11', 'Strike 12', 'Strike 14')
 set(gca,'FontSize',13)
 
 %% Plot for Part 4. (bids/asks option prices for 1 timepoint and varying K)
-Timepoint=length(myTradingRobot.Call800Struct(:,1));
+Timepoint=1000;
+
 CallBid=[myTradingRobot.Call800Struct(Timepoint,4),myTradingRobot.Call900Struct(Timepoint,4),    myTradingRobot.Call950Struct(Timepoint,4),myTradingRobot.Call975Struct(Timepoint,4),    myTradingRobot.Call1000Struct(Timepoint,4),myTradingRobot.Call1025Struct(Timepoint,4),    myTradingRobot.Call1050Struct(Timepoint,4),myTradingRobot.Call1100Struct(Timepoint,4),    myTradingRobot.Call1200Struct(Timepoint,4),myTradingRobot.Call1400Struct(Timepoint,4)];
 CallAsk=[myTradingRobot.Call800Struct(Timepoint,2),myTradingRobot.Call900Struct(Timepoint,2),    myTradingRobot.Call950Struct(Timepoint,2),myTradingRobot.Call975Struct(Timepoint,2),    myTradingRobot.Call1000Struct(Timepoint,2),myTradingRobot.Call1025Struct(Timepoint,2),    myTradingRobot.Call1050Struct(Timepoint,2),myTradingRobot.Call1100Struct(Timepoint,2),    myTradingRobot.Call1200Struct(Timepoint,2),myTradingRobot.Call1400Struct(Timepoint,2)];
 PutBid=[myTradingRobot.Put800Struct(Timepoint,4),myTradingRobot.Put900Struct(Timepoint,4),    myTradingRobot.Put950Struct(Timepoint,4),myTradingRobot.Put975Struct(Timepoint,4),    myTradingRobot.Put1000Struct(Timepoint,4),myTradingRobot.Put1025Struct(Timepoint,4),    myTradingRobot.Put1050Struct(Timepoint,4),myTradingRobot.Put1100Struct(Timepoint,4),    myTradingRobot.Put1200Struct(Timepoint,4),myTradingRobot.Put1400Struct(Timepoint,4)];
 PutAsk=[myTradingRobot.Put800Struct(Timepoint,2),myTradingRobot.Put900Struct(Timepoint,2),    myTradingRobot.Put950Struct(Timepoint,2),myTradingRobot.Put975Struct(Timepoint,2),    myTradingRobot.Put1000Struct(Timepoint,2),myTradingRobot.Put1025Struct(Timepoint,2),    myTradingRobot.Put1050Struct(Timepoint,2),myTradingRobot.Put1100Struct(Timepoint,2),    myTradingRobot.Put1200Struct(Timepoint,2),myTradingRobot.Put1400Struct(Timepoint,2)];
-Strikes=[800,900,950,975,1000,1025,1050,1100,1200,1400];
 
 hold on
-plot(Strikes,CallBid,'-','Color','blue','LineWidth',3)
-plot(Strikes,CallAsk,'-','Color','green','LineWidth',3)
-plot(Strikes,PutBid,'-','Color','red','LineWidth',3)
-plot(Strikes,PutAsk,'-','Color','black','LineWidth',3)
+plot(myStrikeVector,CallBid,'-','Color','blue','LineWidth',3)
+plot(myStrikeVector,CallAsk,'-','Color','green','LineWidth',3)
+plot(myStrikeVector,PutBid,'-','Color','red','LineWidth',3)
+plot(myStrikeVector,PutAsk,'-','Color','black','LineWidth',3)
 hold off
 text(810,3.5,strcat('Time= ',num2str(Timepoint)))
 xlabel('Time','FontSize',15)
