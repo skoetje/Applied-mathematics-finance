@@ -3,8 +3,12 @@ clear myFeedPublisher;
 clear myOptionsQuoter;
 clear myTradingRobot;
 
-load('ING3.mat');
+<<<<<<< HEAD
+load('ING1.mat');
 
+=======
+load('ING2.mat');
+>>>>>>> 015bdc68c6ae3867e1825eee993bb73ed65f9e46
 myExchange = CreateExchangeOpt();
 
 myFeedPublisher = FeedPublisher();
@@ -15,10 +19,10 @@ myOptionsQuoter = OptionsQuoter();
 myExchange.RegisterAutoTrader(myOptionsQuoter);
 myOptionsQuoter.StartAutoTrader(myExchange, myFeedPublisher);
 
-myTradingRobot = AnalysisRobot_final();
+myTradingRobot = TradingRobot();
 myExchange.RegisterAutoTrader(myTradingRobot);
 myTradingRobot.StartAutoTrader(myExchange);
 
 myFeedPublisher.StartFeed(myFeed);
 
-Report_Analysis(myTradingRobot);
+Report_Trading(myTradingRobot);

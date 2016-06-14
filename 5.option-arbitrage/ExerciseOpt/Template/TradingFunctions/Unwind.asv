@@ -1,46 +1,11 @@
 function Unwind(aBot,aTime)
 
 myFeedLength=3300;
-myThreshold=myFeedLength/1.1;
-myFactor=0.05;
+myThreshold=myFeedLength/2;
+myFactor=0.5;
 myTradeFactor=1.1;
-myDeviationStock=0.10;
-myDeviationOption=0.01;
-myExponent=2;
-myMeanFactor=0.001;
-
-% Unwinding of Stocks
-if aTime>myThreshold,
-    if isempty(aBot.StockDepth)==0
-        if isempty(find(strcmp(aBot.ownTrades.ISIN,'ING')))==0,
-            myStockTrades=find(strcmp(aBot.ownTrades.ISIN,'ING'));
-            myStockSells=myStockTrades(ismember(myStockTrades,find(aBot.ownTrades.side==-1)));
-            myStockBuys=myStockTrades(ismember(myStockTrades,find(aBot.ownTrades.side==1)));
-            myStockPosition= sum(aBot.ownTrades.volume(myStockTrades).*aBot.ownTrades.side(myStockTrades));
-
-            if myStockPosition<0 && isempty(aBot.StockDepth.askVolume)==0,
-                myStockPrice=aBot.StockDepth.askLimitPrice(1);
-
-                if myStockPrice<-myDeviationStock+nanmean(aBot.ownTrades.price(myStockSells))*(1-myMeanFactor+myFactor*abs((aTime-myThreshold)/(myFeedLength-myThreshold))^myExponent);
-                    myStockVolume=round(min(aBot.StockDepth.askVolume(1),-myStockPosition/2));
-                    if myStockVolume>0,
-                        aBot.StockDepth.askVolume(1)=aBot.StockDepth.askVolume(1)-myStockVolume;
-                        aBot.SendNewOrder(myStockPrice, myStockVolume,  1, {'ING'}, {'IMMEDIATE'}, -aTime);
-                    end
-                end
-            elseif myStockPosition>0 && isempty(aBot.StockDepth.bidVolume)==0,
-                myStockPrice=aBot.StockDepth.bidLimitPrice(1);
-                if myStockPrice>myDeviationStock+nanmean(aBot.ownTrades.price(myStockBuys))*(1+myMeanFactor-myFactor*abs((aTime-myThreshold)/(myFeedLength-myThreshold))^myExponent);
-                    myStockVolume=round(min(aBot.StockDepth.bidVolume(1),myStockPosition/2));
-                    if myStockVolume>0,
-                        aBot.StockDepth.bidVolume(1)=aBot.StockDepth.bidVolume(1)-myStockVolume;
-                        aBot.SendNewOrder(myStockPrice, myStockVolume,  -1, {'ING'}, {'IMMEDIATE'}, -aTime);
-                    end
-                end
-            end
-        end
-    end
-end
+myDeviation=0.01;
+myExponent=10;
 
 for myBoolean=0:1,
     if aTime>myThreshold,
@@ -61,7 +26,7 @@ for myBoolean=0:1,
                         myOptionBuyPrices = aBot.ownTrades.price(myOptionBuys);
                         myOptionSellPrices = aBot.ownTrades.price(myOptionSells);
 
-                        if myOptionPrice > myDeviationOption+nanmean(myOptionBuyPrices)*(1+myMeanFactor-myFactor*abs((aTime-myThreshold)/(myFeedLength-myThreshold))^myExponent) && myOptionVolume<=myOptionDepth.bidVolume,
+                        if myOptionPrice > myDeviation+nanmean(myOptionBuyPrices)-myFactor*nanmean(aBot.ownTrades.price(myOptionSells))*((aTime-myThreshold)/(myFeedLength-myThreshold))^myExponent && myOptionVolume<=myOptionDepth.bidVolume,
                             
                             if myBoolean==0,
                                 if myStrike==8,    
@@ -120,7 +85,7 @@ for myBoolean=0:1,
                         myOptionBuyPrices = aBot.ownTrades.price(myOptionBuys);
                         myOptionSellPrices = aBot.ownTrades.price(myOptionSells);
 
-                        if myOptionPrice < -myDeviationOption+nanmean(myOptionSellPrices)*(1-myMeanFactor+myFactor*abs((aTime-myThreshold)/(myFeedLength-myThreshold))^myExponent) && myOptionVolume<=myOptionDepth.askVolume,
+                        if myOptionPrice < -myDeviation+nanmean(myOptionSellPrices)+myFactor*nanmean(aBot.ownTrades.price(myOptionBuys))*((aTime-myThreshold)/(myFeedLength-myThreshold))^myExponent && myOptionVolume<=myOptionDepth.askVolume,
                             
                             if myBoolean==0,
                                 if myStrike==8,    
@@ -180,5 +145,19 @@ for myBoolean=0:1,
     end
 end
 
+% Unwinding of Stocks
+if isempty(aBot.StockDepth)==0
+    if isempty(find(strcmp(aBot.ownTrades.ISIN,'ING')))==0,
+        myStockTrades=find(strcmp(aBot.ownTrades.ISIN,'ING'));
+        myStockSells=myOptionTrades(ismember(myStockTrades,find(aBot.ownTrades.side==-1)));
+        myStockBuys=myOptionTrades(ismember(myStockTrades,find(aBot.ownTrades.side==1)));
+        myStockPosition= sum(aBot.ownTrades.volume(myStockTrades).*aBot.ownTrades.side(myStockTrades));
+
+        if myStockPosition<0 && isempty(aBot.StockDepth.askVolume)==0,
+            aBot.StockDepth.askVolume(1)=aBot.StockDepth.askVolume(1)-aBot.StockDepth.askVolume(1);
+            
+                
+    
+    
 
 end
