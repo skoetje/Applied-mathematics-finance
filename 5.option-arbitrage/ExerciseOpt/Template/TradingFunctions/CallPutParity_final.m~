@@ -1,10 +1,10 @@
-function pcBram(aBot,aStrike)
+function CallPutParity_final(aBot,aStrike)
 
-
+myCallOptionDepth=OptionDepth(aBot,aStrike,1);
+myPutOptionDepth=OptionDepth(aBot,aStrike,0);
 
 if isempty(myCallOptionDepth)==0 && isempty(myPutOptionDepth)==0,
-% Arbitrage when put-call parity does not hold between
-% equal strike price stocks
+% Arbitrage when put-call parity does not hold between equal strike price stocks
 
     %Preambule
     myStrike=aStrike;
@@ -22,6 +22,8 @@ if isempty(myCallOptionDepth)==0 && isempty(myPutOptionDepth)==0,
         myCallAskV=myCallOptionDepth.askVolume;
         myPutBidP=myPutOptionDepth.bidLimitPrice;
         myPutBidV=myPutOptionDepth.bidVolume;
+        mySpotBidP=aBot.StockDepth.bidLimitPrice(1);
+        mySpotBidV=aBot.StockDepth.bidVolume(1);
  
         if myCallAskP+myStrike<myPutBidP+mySpotBidP,        
             if myCallAskV>0 && myPutBidV >0, 
@@ -86,3 +88,4 @@ if isempty(myPutOptionDepth.askVolume)==0,
         end
 end
 end
+ 

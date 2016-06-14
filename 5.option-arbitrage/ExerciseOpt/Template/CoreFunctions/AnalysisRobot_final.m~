@@ -29,38 +29,25 @@ classdef AnalysisRobot_final < AutoTrader
         StockBidPrices
         StockAskVolumes
         StockBidVolumes
+                        
+        CallOptionAskPrices
+        CallOptionBidPrices
+        CallOptionAskVolumes
+        CallOptionBidVolumes
+        CallOptionVolatility
         
-        OptionAskPrices
-        OptionBidPrices
-        OptionAskVolumes
-        OptionBidVolumes
-        
-        Call800Struct
-        Call900Struct
-        Call950Struct
-        Call975Struct
-        Call1000Struct
-        Call1025Struct
-        Call1050Struct
-        Call1100Struct
-        Call1200Struct
-        Call1400Struct
-        
-        Put800Struct
-        Put900Struct
-        Put950Struct
-        Put975Struct
-        Put1000Struct
-        Put1025Struct
-        Put1050Struct
-        Put1100Struct
-        Put1200Struct
-        Put1400Struct
-        
-        CallDeltaVec
-        PutDeltaVec
-        CallGammaVec
-        PutGammaVec
+        PutOptionAskPrices
+        PutOptionBidPrices
+        PutOptionAskVolumes
+        PutOptionBidVolumes
+        PutOptionVolatility
+                
+        CallDeltas
+        PutDeltas
+        CallGammas
+        PutGammas
+        CallVegas
+        PutVegas
     end
 
     methods
@@ -69,6 +56,7 @@ classdef AnalysisRobot_final < AutoTrader
                 aBot.Time(1)=1;
             end
             TimePoint=aBot.Time(end);
+            myStrikeVector=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
             
             % Check cases
             switch aDepth.ISIN
@@ -96,167 +84,89 @@ classdef AnalysisRobot_final < AutoTrader
             end
             
             %We also record the Deltas and gammas
-            aBot.CallDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,1);
-            aBot.PutDeltaVec(TimePoint)=Delta(aBot,10,TimePoint,0);
-            aBot.CallGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,1);
-            aBot.PutGammaVec(TimePoint)=Gamma(aBot,10,TimePoint,0);
+            for i=1:10
+                myStrike=myStrikeVector(i);
+                aBot.CallDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
+                aBot.CallGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+                aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
+                aBot.PutDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,0);
+                aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
+                aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
+            end
             
             % Recording Stock
             myStock=aBot.StockDepth;
-            myStockOfferVol=NaN;
-            myStockOfferPrice=NaN;
-            myStockBidVol=NaN;
+            myStockAskVolume=NaN;
+            myStockAskPrice=NaN;
+            myStockBidVolume=NaN;
             myStockBidPrice=NaN;
 
             if isempty(myStock)==0,
                 if isempty(myStock.askLimitPrice)==0,
-                    myStockOfferPrice=myStock.askLimitPrice(1);
-                    myStockOfferVol=myStock.askVolume(1);
+                    myStockAskPrice=myStock.askLimitPrice(1);
+                    myStockAskVolume=myStock.askVolume(1);
                 end
                 if isempty(myStock.bidLimitPrice)==0,
                     myStockBidPrice=myStock.bidLimitPrice(1);
-                    myStockBidVol=myStock.bidVolume(1);
+                    myStockBidVolume=myStock.bidVolume(1);
                 end
             end
 
-            aBot.StockOfferVol(end+1)=myStockOfferVol;
-            aBot.StockOfferPrice(end+1)=myStockOfferPrice;
-            aBot.StockBidVol(end+1)=myStockBidVol;
-            aBot.StockBidPrice(end+1)=myStockBidPrice;
+            aBot.StockAskVolumes(end+1)=myStockAskVolume;
+            aBot.StockAskPrices(end+1)=myStockAskPrice;
+            aBot.StockBidVolumes(end+1)=myStockBidVolume;
+            aBot.StockBidPrices(end+1)=myStockBidPrice;
             
             % Recording Options
-            myStrikeVector=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
             for i=1:10,
                 myStrike=myStrikeVector(i);
                 myCallOptionDepth=OptionDepth(aBot,myStrike,1);
                 myPutOptionDepth=OptionDepth(aBot,myStrike,0);
-                myOptionVec=[myPutOptionDepth,myCallOptionDepth];
                 
                 for j=1:2,
-                    myOption = myOptionVec(i);
-                    myOptionOfferVol=NaN;
-                    myOptionOfferPrice=NaN;
-                    myOptionBidVol=NaN;
-                    myOptionBidPrice=NaN;          
+                    myOption = [];
+                    if j==1,
+                        myOption = myPutOptionDepth;
+                    elseif j==2,
+                        myOption = myCallOptionDepth;
+                    end
+                    myOptionAskPrice=NaN;
+                    %myOptionAskVolume=NaN;
+                    myOptionBidPrice=NaN;
+                    %myOptionBidVolume=NaN;
+                    myOptionVolatility=NaN;
 
                     if (isempty(myOption)==0),
                         if (isempty(myOption.askLimitPrice)==0),
-                            myOptionOfferPrice=myOption.askLimitPrice(1);
-                            myOptionOfferVol=myOption.askVolume(1);
+                            myOptionAskPrice=myOption.askLimitPrice(1);
+                            %myOptionAskVolume=myOption.askVolume(1);
                         end
                         if (isempty(myOption.bidLimitPrice)==0),
                             myOptionBidPrice=myOption.bidLimitPrice(1);
-                            myOptionBidVol=myOption.bidVolume(1);
+                            %myOptionBidVolume=myOption.bidVolume(1);
+                        end
+                        if isempty(myOption.bidLimitPrice)==0 && isempty(myOption.askLimitPrice)==0,
+                            myOptionSpot = (myOptionBidPrice+myOptionAskPrice)/2;
+                            myStockSpot= (myStockAskPrice+myStockBidPrice)/2;
+                            myOptionVolatility = ImpliedVolatility(myStockSpot,myStrike,TimePoint,myOptionSpot,j-1);
                         end
                     end
                     
-                    aBot.OptionAskPrices(TimePoint,k
-                    
-                
-                %Record offer/bid prices and volumes
-                if i==1,
-                    aBot.Call800Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call800Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call800Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call800Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==2,
-                    aBot.Put800Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put800Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put800Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put800Struct(TimePoint,4)=myOptionBidPrice;  
-                elseif i==3,
-                    aBot.Call900Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call900Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call900Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call900Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==4,
-                    aBot.Put900Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put900Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put900Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put900Struct(TimePoint,4)=myOptionBidPrice;    
-                elseif i==5,
-                    aBot.Call950Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call950Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call950Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call950Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==6,
-                    aBot.Put950Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put950Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put950Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put950Struct(TimePoint,4)=myOptionBidPrice;    
-                elseif i==7,
-                    aBot.Call975Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call975Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call975Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call975Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==8,
-                    aBot.Put975Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put975Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put975Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put975Struct(TimePoint,4)=myOptionBidPrice;   
-                elseif i==9,
-                    aBot.Call1000Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call1000Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call1000Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call1000Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==10,
-                    aBot.Put1000Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put1000Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put1000Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put1000Struct(TimePoint,4)=myOptionBidPrice;  
-                elseif i==11,
-                    aBot.Call1025Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call1025Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call1025Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call1025Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==12,
-                    aBot.Put1025Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put1025Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put1025Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put1025Struct(TimePoint,4)=myOptionBidPrice; 
-                elseif i==13,
-                    aBot.Call1050Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call1050Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call1050Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call1050Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==14,
-                    aBot.Put1050Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put1050Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put1050Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put1050Struct(TimePoint,4)=myOptionBidPrice; 
-                elseif i==15,
-                    aBot.Call1100Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call1100Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call1100Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call1100Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==16,
-                    aBot.Put1100Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put1100Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put1100Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put1100Struct(TimePoint,4)=myOptionBidPrice;  
-                elseif i==17,
-                    aBot.Call1200Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call1200Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call1200Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call1200Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==18,
-                    aBot.Put1200Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put1200Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put1200Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put1200Struct(TimePoint,4)=myOptionBidPrice;     
-                elseif i==19,
-                    aBot.Call1400Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Call1400Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Call1400Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Call1400Struct(TimePoint,4)=myOptionBidPrice;
-                elseif i==20,
-                    aBot.Put1400Struct(TimePoint,1)=myOptionOfferVol;
-                    aBot.Put1400Struct(TimePoint,2)=myOptionOfferPrice;
-                    aBot.Put1400Struct(TimePoint,3)=myOptionBidVol;
-                    aBot.Put1400Struct(TimePoint,4)=myOptionBidPrice;              
+                    if j==1,
+                        aBot.CallOptionAskPrices(TimePoint,i)=myOptionAskPrice;
+                        aBot.CallOptionBidPrices(TimePoint,i)=myOptionBidPrice;
+                        %aBot.CallOptionAskVolumes(TimePoint,i)=myOptionAskVolume;
+                        %aBot.CallOptionBidVolumes(TimePoint,i)=myOptionBidVolume;
+                        aBot.CallOptionVolatility(TimePoint,i)=myOptionVolatility;
+                    elseif j==2,
+                        aBot.PutOptionAskPrices(TimePoint,i)=myOptionAskPrice;
+                        aBot.PutOptionBidPrices(TimePoint,i)=myOptionBidPrice;
+                        %aBot.PutOptionAskVolumes(TimePoint,i)=myOptionAskVolume;
+                        %aBot.PutOptionBidVolumes(TimePoint,i)=myOptionBidVolume;
+                        aBot.PutOptionVolatility(TimePoint,i)=myOptionVolatility;
+                    end
                 end
-            end
-            
+            end            
             
             if sum(TimePoint/100 == linspace(0,1000,1001))==1,
                 TimePoint

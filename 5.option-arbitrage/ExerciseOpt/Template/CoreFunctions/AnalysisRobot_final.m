@@ -29,12 +29,7 @@ classdef AnalysisRobot_final < AutoTrader
         StockBidPrices
         StockAskVolumes
         StockBidVolumes
-        
-        %OptionAskPrices
-        %OptionBidPrices
-        %OptionAskVolumes
-        %OptionBidVolumes
-                
+                        
         CallOptionAskPrices
         CallOptionBidPrices
         CallOptionAskVolumes
@@ -89,16 +84,16 @@ classdef AnalysisRobot_final < AutoTrader
             end
             
             %We also record the Deltas and gammas
-%             for i=1:10
-%                 myStrike=myStrikeVector(i);
-%                 aBot.CallDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
-%                 aBot.CallGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
-%                 aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
-%                 aBot.PutDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,0);
-%                 aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
-%                 aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
-%             end
-%             
+            %for i=1:10
+                %myStrike=myStrikeVector(i);
+                %aBot.CallDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
+                %aBot.CallGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+                %aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
+                %aBot.PutDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,0);
+                %aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
+                %aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
+            %end
+            
             % Recording Stock
             myStock=aBot.StockDepth;
             myStockAskVolume=NaN;
@@ -136,19 +131,19 @@ classdef AnalysisRobot_final < AutoTrader
                         myOption = myCallOptionDepth;
                     end
                     myOptionAskPrice=NaN;
-                    myOptionAskVolume=NaN;
+                    %myOptionAskVolume=NaN;
                     myOptionBidPrice=NaN;
-                    myOptionBidVolume=NaN;
+                    %myOptionBidVolume=NaN;
                     myOptionVolatility=NaN;
 
                     if (isempty(myOption)==0),
                         if (isempty(myOption.askLimitPrice)==0),
                             myOptionAskPrice=myOption.askLimitPrice(1);
-                            myOptionAskVolume=myOption.askVolume(1);
+                            %myOptionAskVolume=myOption.askVolume(1);
                         end
                         if (isempty(myOption.bidLimitPrice)==0),
                             myOptionBidPrice=myOption.bidLimitPrice(1);
-                            myOptionBidVolume=myOption.bidVolume(1);
+                            %myOptionBidVolume=myOption.bidVolume(1);
                         end
                         if isempty(myOption.bidLimitPrice)==0 && isempty(myOption.askLimitPrice)==0,
                             myOptionSpot = (myOptionBidPrice+myOptionAskPrice)/2;
@@ -156,23 +151,18 @@ classdef AnalysisRobot_final < AutoTrader
                             myOptionVolatility = ImpliedVolatility(myStockSpot,myStrike,TimePoint,myOptionSpot,j-1);
                         end
                     end
-
-                    %aBot.OptionAskPrices(TimePoint,2*(i-1)+j)=myOptionAskPrice;
-                    %aBot.OptionBidPrices(TimePoint,2*(i-1)+j)=myOptionBidPrice;
-                    %aBot.OptionAskVolumes(TimePoint,2*(i-1)+j)=myOptionAskVolume;
-                    %aBot.OptionBidVolumes(TimePoint,2*(i-1)+j)=myOptionBidVolume;
                     
                     if j==1,
                         aBot.CallOptionAskPrices(TimePoint,i)=myOptionAskPrice;
                         aBot.CallOptionBidPrices(TimePoint,i)=myOptionBidPrice;
-                        aBot.CallOptionAskVolumes(TimePoint,i)=myOptionAskVolume;
-                        aBot.CallOptionBidVolumes(TimePoint,i)=myOptionBidVolume;
+                        %aBot.CallOptionAskVolumes(TimePoint,i)=myOptionAskVolume;
+                        %aBot.CallOptionBidVolumes(TimePoint,i)=myOptionBidVolume;
                         aBot.CallOptionVolatility(TimePoint,i)=myOptionVolatility;
                     elseif j==2,
                         aBot.PutOptionAskPrices(TimePoint,i)=myOptionAskPrice;
                         aBot.PutOptionBidPrices(TimePoint,i)=myOptionBidPrice;
-                        aBot.PutOptionAskVolumes(TimePoint,i)=myOptionAskVolume;
-                        aBot.PutOptionBidVolumes(TimePoint,i)=myOptionBidVolume;
+                        %aBot.PutOptionAskVolumes(TimePoint,i)=myOptionAskVolume;
+                        %aBot.PutOptionBidVolumes(TimePoint,i)=myOptionBidVolume;
                         aBot.PutOptionVolatility(TimePoint,i)=myOptionVolatility;
                     end
                 end
