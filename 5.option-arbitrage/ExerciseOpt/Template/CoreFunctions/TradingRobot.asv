@@ -111,37 +111,37 @@ classdef TradingRobot < AutoTrader
             
             
             % 1) Delta Hedging  
-            aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
-            myInitialAmount=round(1000/length(aBot.myStrikeVec));
-            aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);     
-            for i=1:length(aBot.myStrikeVec),
-                myStrike=aBot.myStrikeVec(i);
-                if isempty(OptionDepth(aBot,myStrike,1))==0;
-                    myOptionDepth=OptionDepth(aBot,myStrike,1);
-                    aBot.StartDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
-                    aBot.DeltaConstantG(TimePoint,i)=NaN;
-                    %aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
-
-                    if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-                        if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
-                            StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
-                        end
-                    end
-                end
-            end
-            aBot.DeltaPositionBef(TimePoint)=0;
-            aBot.DeltaPositionAft(TimePoint)=0;
-            if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-                if length(aBot.ownTrades.price)>16,
-                    for i=1:length(aBot.myStrikeVec),
-                        myStrike=aBot.myStrikeVec(i);
-                        aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
-                    end
-                    aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-                    RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
-                    aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-                end
-            end
+%             aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
+%             myInitialAmount=round(1000/length(aBot.myStrikeVec));
+%             aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);     
+%             for i=1:length(aBot.myStrikeVec),
+%                 myStrike=aBot.myStrikeVec(i);
+%                 if isempty(OptionDepth(aBot,myStrike,1))==0;
+%                     myOptionDepth=OptionDepth(aBot,myStrike,1);
+%                     aBot.StartDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
+%                     aBot.DeltaConstantG(TimePoint,i)=NaN;
+%                     %aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+% 
+%                     if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+%                         if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
+%                             StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
+%                         end
+%                     end
+%                 end
+%             end
+%             aBot.DeltaPositionBef(TimePoint)=0;
+%             aBot.DeltaPositionAft(TimePoint)=0;
+%             if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+%                 if length(aBot.ownTrades.price)>16,
+%                     for i=1:length(aBot.myStrikeVec),
+%                         myStrike=aBot.myStrikeVec(i);
+%                         aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
+%                     end
+%                     aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
+%                     RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
+%                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
+%                 end
+%             end
             
 
 
@@ -152,6 +152,7 @@ classdef TradingRobot < AutoTrader
                 %myStrike=14;
                 %pcBram(aBot,myStrike);
                 CallPutParityMark(aBot,myStrike,TimePoint);
+                %CallPut(aBot,myStrike);
             end
             
                         

@@ -2,6 +2,12 @@ classdef TradingRobot < AutoTrader
     properties
         %TradeTimes
         TradeTimes
+        Differences
+        PutBuys
+        PutSells
+        CallSells
+        CallBuys
+        StockShifts
         
         %Saving Spots
         SpotHistory
@@ -151,7 +157,9 @@ classdef TradingRobot < AutoTrader
                 myStrike=aBot.myStrikeVec(i);
                 %myStrike=14;
                 %pcBram(aBot,myStrike);
-                CallPutParityMark(aBot,myStrike,TimePoint);
+                %CallPutParityMark(aBot,myStrike,TimePoint);
+                CallPut(aBot,myStrike);
+                Unwind2(aBot,myStrike,TimePoint);
             end
             
                         
