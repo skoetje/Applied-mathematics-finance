@@ -17,9 +17,9 @@ myDelta=NaN;
 if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
     if isempty(myOptionDepth.askLimitPrice)==0 && isempty(myOptionDepth.bidLimitPrice)==0,
         myCallSpot=(myOptionDepth.askLimitPrice+myOptionDepth.bidLimitPrice)/2;
-        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallSpot,1));
-        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallSpot,1));
-        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myCallSpot,1));
+        myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,blsimpv(mySpot,myStrike,0,myExpiry,myCallSpot));
+        myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,blsimpv(mySpot,myStrike,0,myExpiry,myCallSpot));
+        myValue3=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,blsimpv(mySpot,myStrike,0,myExpiry,myCallSpot));
         myValueVec=[myValue1,myValue2,myValue3];
         myGradientVec=gradient(myValueVec)/0.01;
         myDelta=myGradientVec(2)*myValue3/myValue3;
@@ -30,9 +30,9 @@ end
 if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
     if isempty(myOptionDepth.askLimitPrice)==0 && isempty(myOptionDepth.bidLimitPrice)==0,
         myPutSpot=(myOptionDepth.askLimitPrice+myOptionDepth.bidLimitPrice)/2;
-        [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutSpot,0));
-        [a,myValue2]=BlackScholes(mySpot,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutSpot,0));
-        [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,ImpliedVolatility(mySpot,myStrike,myExpiry,myPutSpot,0));
+        [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,blsimpv(mySpot,myStrike,0,myExpiry,myPutSpot));
+        [a,myValue2]=BlackScholes(mySpot,myStrike,myExpiry,myInterest,blsimpv(mySpot,myStrike,0,myExpiry,myPutSpot));
+        [a,myValue3]=BlackScholes(mySpot+0.01,myStrike,myExpiry,myInterest,blsimpv(mySpot,myStrike,0,myExpiry,myPutSpot));
         myValueVec=[myValue1,myValue2,myValue3];   
         myGradientVec=gradient(myValueVec)/0.01;
         myDelta=myGradientVec(2)*myValue3/myValue3;

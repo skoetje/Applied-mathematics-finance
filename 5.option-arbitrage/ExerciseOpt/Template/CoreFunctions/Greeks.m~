@@ -1,0 +1,13 @@
+function Greeks(aBot,
+
+myTrades=aBot.ownTrades;
+TradesTime=myTrades.timestamp;
+                
+myCallDeltas=aBot.CallDeltas;
+myCallGammas=aBot.CallGammas;
+myCallVegas=aBot.CallVegas;
+myPutDeltas=aBot.PutDeltas;
+myPutGammas=aBot.PutGammas;
+myPutVegas=aBot.PutVegas;
+
+myCal

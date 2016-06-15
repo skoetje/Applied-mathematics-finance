@@ -1,18 +1,36 @@
-function myGammaPosition = GammaPosition(aBot,aStrike)
+function myGammaPosition = GammaPosition(aBot,aStrikeVec)
 
-myGammaVec=[0.3,0.3,0.3,0.3,0.3193, 0.3,0.3,0.3,0.3,0.3];
-if aStrike==10,
-    myNumber=5;
-elseif aStrike==8,
-    myNumber=1;
+myTrades=aBot.ownTrades;
+myStockTrades=find(strcmp(myTrades.ISIN,'ING'));
+myStockVolumes=zeros(length(myStockTrades),1);
+
+for i=2:length(myStockTrades),
+    myStockVolumes(i)=myTrades.volume(myStockTrades(i))*myTrades.side(myStockTrades(i));
 end
-myGamma=myGammaVec(myNumber);
 
-myLTtime=round(aBot.sentOrders.ownOrderId(end));
-mySpot=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
-myPastSpot=aBot.SpotHistory(myLTtime);
-mySpotMovement=mySpot-myPastSpot;
-myGammaChange=aBot.CallDeltaVecAFT(myLTtime)+myGamma*mySpotMovement;
-myGammaPosition = myDeltaChange*aBot.ownTrades.volume(1);
+myStockPosition=sum(myStockVolumes);
+
+myGammaPositions=zeros(10,2);
+myOptionISINs=GetAllOptionISINs;
+
+for j=0:1,
+    for i=1:length(aStrikeVec),
+        myStrike=aStrikeVec(i);
+        myGamma=GammaVector(myStrike);
+        myOptionDepth=OptionDepth(aBot,myStrike,j);
+                
+        myOptionTrades=find(strcmp(myTrades.ISIN,myOptionDepth.ISIN));
+        myOptionVolumes=zeros(length(myOptionTrades),1);
+
+        for k=2:length(myOptionTrades),
+            myOptionVolumes(k)=myTrades.volume(myOptionTrades(k))*myTrades.side(myOptionTrades(k));
+        end
+        
+        myOptionPosition=sum(myTrades.volume(myOptionTrades).*myTrades.side(myOptionTrades));
+        
+        myGammaPositions(i,j+1)=myOptionPosition*myGamma;
+    end
+end
+myGammaPosition=sum(sum(myGammaPositions))+myStockPosition;%sum(sum(myGammaPositions));
 
 end

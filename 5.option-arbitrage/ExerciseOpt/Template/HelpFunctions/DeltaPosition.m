@@ -1,22 +1,8 @@
 function myDeltaPosition = DeltaPosition(aBot,aStrikeVec)
 
-% myLTtime=round(aBot.sentOrders.ownOrderId(end));
-% mySpot=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
-% myPastSpot=aBot.SpotHistory(myLTtime);
-% mySpotMovement=mySpot-myPastSpot;
-% myDeltaChange=aBot.CallDeltaVecAFT(myLTtime)+myGamma*mySpotMovement;
-% myDeltaPosition = myDeltaChange*aBot.ownTrades.volume(1);
-
-
-
-%myDeltaPosition = aBot.ownTrades.volume(1)*Delta_CGamma(aBot,aStrike,1)+sum(aBot.ownTrades.volume(2:end).*aBot.ownTrades.side(2:end));
-
 aTrades = aBot.ownTrades;
 
 myING = zeros(length(aTrades.side),2);
-% Now make a 3d matrix, where the row and column denotes 
-% the price and volume, and the page denotes the type
-% of option
 options = GetAllOptionISINs();
 optionNo = numel(GetAllOptionISINs());
 tradeNo = length(aTrades.side);
@@ -57,9 +43,6 @@ myDeltaPositionVec=zeros(length(myStrikeVec),1);
 for i=1:length(myStrikeVec),
     myDeltaPositionVec(i)=round(aBot.DeltaConstantG(end,i)*Callpositions(i));
 end
-% myDeltaPositionWeightedVec=zeros(length(myStrikeVec),1);
-% for i=1:length(myStrikeVec),
-%     myDeltaPositionWeightedVec(i)=myDeltaPositionVec(i)+position(1)*(myDeltaPositionVec(i)/sum(myDeltaPositionVec));
-% end
+
 myDeltaPosition=nansum(aBot.DeltaConstantG(end,:).*transpose(Callpositions))+position(1);
 end
