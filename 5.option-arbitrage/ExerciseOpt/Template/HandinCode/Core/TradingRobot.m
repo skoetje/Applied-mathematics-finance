@@ -126,7 +126,7 @@ classdef TradingRobot < AutoTrader
 %                 myStrike=aBot.myStrikeVec(i);
 %                 if isempty(OptionDepth(aBot,myStrike,1))==0;
 %                     myOptionDepth=OptionDepth(aBot,myStrike,1);
-%                     aBot.StartDeltas(TimePoint,i)=DeltaStart2(aBot,myStrike,TimePoint,1);
+%                     aBot.StartDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
 %                     aBot.DeltaConstantG(TimePoint,i)=NaN;
 %                     aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
 % 
@@ -153,10 +153,10 @@ classdef TradingRobot < AutoTrader
 %             
 %             for i=1:10
 %                 myStrike=myStrikeVector(i);
-%                 aBot.CallDeltas(TimePoint,i)=DeltaStart2(aBot,myStrike,TimePoint,1);
+%                 aBot.CallDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
 %                 aBot.CallGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
 %                 aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
-%                 aBot.PutDeltas(TimePoint,i)=DeltaStart2(aBot,myStrike,TimePoint,0);
+%                 aBot.PutDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,0);
 %                 aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
 %                 aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
 %             end
@@ -166,7 +166,7 @@ classdef TradingRobot < AutoTrader
             for i=1:length(aBot.myStrikeVec),
                 myStrike=aBot.myStrikeVec(i);
                 CallPut(aBot,myStrike);
-                Unwind2(aBot,myStrike,TimePoint);
+                Unwind(aBot,myStrike,TimePoint);
             end
             
             

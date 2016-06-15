@@ -74,19 +74,19 @@ set(gca,'FontSize',13)
 %% Plot for Part 4. (bids/asks option prices for 1 timepoint and varying K)
 Timepoint=1000;
 
-CallBid=[myTradingRobot.Call800Struct(Timepoint,4),myTradingRobot.Call900Struct(Timepoint,4),    myTradingRobot.Call950Struct(Timepoint,4),myTradingRobot.Call975Struct(Timepoint,4),    myTradingRobot.Call1000Struct(Timepoint,4),myTradingRobot.Call1025Struct(Timepoint,4),    myTradingRobot.Call1050Struct(Timepoint,4),myTradingRobot.Call1100Struct(Timepoint,4),    myTradingRobot.Call1200Struct(Timepoint,4),myTradingRobot.Call1400Struct(Timepoint,4)];
-CallAsk=[myTradingRobot.Call800Struct(Timepoint,2),myTradingRobot.Call900Struct(Timepoint,2),    myTradingRobot.Call950Struct(Timepoint,2),myTradingRobot.Call975Struct(Timepoint,2),    myTradingRobot.Call1000Struct(Timepoint,2),myTradingRobot.Call1025Struct(Timepoint,2),    myTradingRobot.Call1050Struct(Timepoint,2),myTradingRobot.Call1100Struct(Timepoint,2),    myTradingRobot.Call1200Struct(Timepoint,2),myTradingRobot.Call1400Struct(Timepoint,2)];
-PutBid=[myTradingRobot.Put800Struct(Timepoint,4),myTradingRobot.Put900Struct(Timepoint,4),    myTradingRobot.Put950Struct(Timepoint,4),myTradingRobot.Put975Struct(Timepoint,4),    myTradingRobot.Put1000Struct(Timepoint,4),myTradingRobot.Put1025Struct(Timepoint,4),    myTradingRobot.Put1050Struct(Timepoint,4),myTradingRobot.Put1100Struct(Timepoint,4),    myTradingRobot.Put1200Struct(Timepoint,4),myTradingRobot.Put1400Struct(Timepoint,4)];
-PutAsk=[myTradingRobot.Put800Struct(Timepoint,2),myTradingRobot.Put900Struct(Timepoint,2),    myTradingRobot.Put950Struct(Timepoint,2),myTradingRobot.Put975Struct(Timepoint,2),    myTradingRobot.Put1000Struct(Timepoint,2),myTradingRobot.Put1025Struct(Timepoint,2),    myTradingRobot.Put1050Struct(Timepoint,2),myTradingRobot.Put1100Struct(Timepoint,2),    myTradingRobot.Put1200Struct(Timepoint,2),myTradingRobot.Put1400Struct(Timepoint,2)];
+%CallBid=[myTradingRobot.Call800Struct(Timepoint,4),myTradingRobot.Call900Struct(Timepoint,4),    myTradingRobot.Call950Struct(Timepoint,4),myTradingRobot.Call975Struct(Timepoint,4),    myTradingRobot.Call1000Struct(Timepoint,4),myTradingRobot.Call1025Struct(Timepoint,4),    myTradingRobot.Call1050Struct(Timepoint,4),myTradingRobot.Call1100Struct(Timepoint,4),    myTradingRobot.Call1200Struct(Timepoint,4),myTradingRobot.Call1400Struct(Timepoint,4)];
+%CallAsk=[myTradingRobot.Call800Struct(Timepoint,2),myTradingRobot.Call900Struct(Timepoint,2),    myTradingRobot.Call950Struct(Timepoint,2),myTradingRobot.Call975Struct(Timepoint,2),    myTradingRobot.Call1000Struct(Timepoint,2),myTradingRobot.Call1025Struct(Timepoint,2),    myTradingRobot.Call1050Struct(Timepoint,2),myTradingRobot.Call1100Struct(Timepoint,2),    myTradingRobot.Call1200Struct(Timepoint,2),myTradingRobot.Call1400Struct(Timepoint,2)];
+%PutBid=[myTradingRobot.Put800Struct(Timepoint,4),myTradingRobot.Put900Struct(Timepoint,4),    myTradingRobot.Put950Struct(Timepoint,4),myTradingRobot.Put975Struct(Timepoint,4),    myTradingRobot.Put1000Struct(Timepoint,4),myTradingRobot.Put1025Struct(Timepoint,4),    myTradingRobot.Put1050Struct(Timepoint,4),myTradingRobot.Put1100Struct(Timepoint,4),    myTradingRobot.Put1200Struct(Timepoint,4),myTradingRobot.Put1400Struct(Timepoint,4)];
+%PutAsk=[myTradingRobot.Put800Struct(Timepoint,2),myTradingRobot.Put900Struct(Timepoint,2),    myTradingRobot.Put950Struct(Timepoint,2),myTradingRobot.Put975Struct(Timepoint,2),    myTradingRobot.Put1000Struct(Timepoint,2),myTradingRobot.Put1025Struct(Timepoint,2),    myTradingRobot.Put1050Struct(Timepoint,2),myTradingRobot.Put1100Struct(Timepoint,2),    myTradingRobot.Put1200Struct(Timepoint,2),myTradingRobot.Put1400Struct(Timepoint,2)];
 
 hold on
-plot(myStrikeVector,CallBid,'-','Color','blue','LineWidth',3)
-plot(myStrikeVector,CallAsk,'-','Color','green','LineWidth',3)
-plot(myStrikeVector,PutBid,'-','Color','red','LineWidth',3)
-plot(myStrikeVector,PutAsk,'-','Color','black','LineWidth',3)
+plot(myStrikeVector,myTradingRobot.CallOptionBidPrices(end,:),'-','Color','blue','LineWidth',3)
+plot(myStrikeVector,myTradingRobot.CallOptionAskPrices(end,:),'-','Color','green','LineWidth',3)
+plot(myStrikeVector,myTradingRobot.PutOptionBidPrices(end,:),'-','Color','red','LineWidth',3)
+plot(myStrikeVector,myTradingRobot.PutOptionAskPrices(end,:),'-','Color','black','LineWidth',3)
 hold off
 text(810,3.5,strcat('Time= ',num2str(Timepoint)))
-xlabel('Time','FontSize',15)
-ylabel('Volume of Stock','FontSize',15)
+xlabel('Strike Price','FontSize',15)
+ylabel('Value Option','FontSize',15)
 legend('Call bid','Call offer','Put bid','Put offer')
 set(gca,'FontSize',13)
