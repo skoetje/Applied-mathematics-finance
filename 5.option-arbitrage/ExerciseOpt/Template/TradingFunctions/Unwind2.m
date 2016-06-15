@@ -1,9 +1,15 @@
 function Unwind2(aBot,aStrike,aTime)
 
+<<<<<<< HEAD
 myFeedLength=3300;
 myThreshold=myFeedLength*0.8;
 
 
+=======
+myFeedLength=17000;
+myThreshold=myFeedLength*0.8;
+myFactor=0.75;
+>>>>>>> 4460b78b74ca0015affa2a7a71b9ebeb7d75400f
 
 % Time check
 if aTime>myThreshold,
@@ -11,7 +17,7 @@ if aTime>myThreshold,
     myCallDepth=OptionDepth(aBot,aStrike,1);
     myPutDepth=OptionDepth(aBot,aStrike,0);
     myStrike=aStrike;
-    myDiscrepancy=0.01;
+    myDiscrepancy=0.0;
 
     % Check emptiness
     if isempty(myStockDepth)==0 && isempty(myCallDepth)==0 && isempty(myPutDepth)==0,
@@ -28,22 +34,19 @@ if aTime>myThreshold,
                 if isempty(myStockBuys)==0,
                     myStockPosition= sum(aBot.ownTrades.volume(myStockTrades).*aBot.ownTrades.side(myStockTrades));
                     myStockShift = myStockDepth.bidLimitPrice(1) - aBot.ownTrades.price(myStockBuys(end));
-                    aBot.StockShifts(aTime)=myStockShift;
                     
                     myCallTrades = find(strcmp(aBot.ownTrades.ISIN,myCallDepth.ISIN));
                     myCallSells = myCallTrades(ismember(find(strcmp(aBot.ownTrades.ISIN,myCallDepth.ISIN)),find(aBot.ownTrades.side==-1)));
-                    aBot.CallSells=myCallSells;
                     
                     myPutTrades = find(strcmp(aBot.ownTrades.ISIN,myPutDepth.ISIN));
                     myPutBuys = myPutTrades(ismember(find(strcmp(aBot.ownTrades.ISIN,myPutDepth.ISIN)),find(aBot.ownTrades.side==1)));
-                    aBot.PutBuys=myPutBuys;
 
                     if isempty(myCallSells)==0 && isempty(myPutBuys)==0,
                         myCallShift = myCallDepth.askLimitPrice-aBot.ownTrades.price(myCallSells(end));
                         myPutShift = myPutDepth.bidLimitPrice-aBot.ownTrades.price(myPutBuys(end));
-                        aBot.Differences(aTime)=myPutShift+myStockShift-myCallShift;
+                        aBot.DifferencesL(aTime)=myFactor*(myPutShift+myStockShift-myCallShift);
                         
-                        if myPutShift+myStockShift>myCallShift+myDiscrepancy && myStockPosition>0,
+                        if myFactor*(myPutShift+myStockShift)>myCallShift+myDiscrepancy && myStockPosition>0,
 
                             myTradeVolume = min([myStockDepth.bidVolume(1),myCallDepth.askVolume,myPutDepth.bidVolume]);
 
@@ -89,6 +92,78 @@ if aTime>myThreshold,
                                 aBot.SendNewOrder(100, myTradeVolume,  1, {myCallDepth.ISIN}, {'IMMEDIATE'}, 0);
 
                                 aBot.SendNewOrder(0.01, myTradeVolume,  -1, {myPutDepth.ISIN}, {'IMMEDIATE'}, 0);
+                            end
+                        end
+                    end
+                end
+            end
+            % Upper bound
+            if isempty(myStockDepth.askVolume)==0 && isempty(myCallDepth.bidVolume)==0 && isempty(myPutDepth.askVolume)==0,
+                
+                myStockTrades=find(strcmp(aBot.ownTrades.ISIN,'ING'));
+                myStockSells=myStockTrades(ismember(myStockTrades,find(aBot.ownTrades.side==-1)));
+                
+                if isempty(myStockSells)==0,
+                    myStockPosition= sum(aBot.ownTrades.volume(myStockTrades).*aBot.ownTrades.side(myStockTrades));
+                    myStockShift = myStockDepth.askLimitPrice(1) - aBot.ownTrades.price(myStockSells(end));
+                    
+                    myCallTrades = find(strcmp(aBot.ownTrades.ISIN,myCallDepth.ISIN));
+                    myCallBuys = myCallTrades(ismember(find(strcmp(aBot.ownTrades.ISIN,myCallDepth.ISIN)),find(aBot.ownTrades.side==1)));
+                    
+                    myPutTrades = find(strcmp(aBot.ownTrades.ISIN,myPutDepth.ISIN));
+                    myPutSells = myPutTrades(ismember(find(strcmp(aBot.ownTrades.ISIN,myPutDepth.ISIN)),find(aBot.ownTrades.side==-1)));
+
+                    if isempty(myCallBuys)==0 && isempty(myPutSells)==0,
+                        myCallShift = myCallDepth.bidLimitPrice-aBot.ownTrades.price(myCallBuys(end));
+                        myPutShift = myPutDepth.askLimitPrice-aBot.ownTrades.price(myPutSells(end));
+                        aBot.DifferencesU(aTime)=myFactor*(myPutShift+myStockShift)-myCallShift;
+                        
+                        if myFactor*(myPutShift+myStockShift)<myCallShift-myDiscrepancy && myStockPosition<0,
+
+                            myTradeVolume = min([myStockDepth.askVolume(1),myCallDepth.bidVolume,myPutDepth.askVolume]);
+
+                            if myTradeVolume>0,
+
+                                % Update book
+                                aBot.StockDepth.askVolume(1)=aBot.StockDepth.askVolume(1)-myTradeVolume;
+                                aBot.SendNewOrder(myStockDepth.askLimitPrice(1), myTradeVolume,  1, {'ING'}, {'IMMEDIATE'}, 0);
+
+                                if myStrike==8, 
+                                    aBot.Call800Depth.bidVolume = aBot.Call800Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put800Depth.askVolume = aBot.Put800Depth.askVolume-myTradeVolume;
+                                elseif myStrike==9,
+                                    aBot.Call900Depth.bidVolume = aBot.Call900Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put900Depth.askVolume = aBot.Put900Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==9.5,
+                                    aBot.Call950Depth.bidVolume = aBot.Call950Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put950Depth.askVolume = aBot.Put950Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==9.75,
+                                    aBot.Call975Depth.bidVolume = aBot.Call975Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put975Depth.askVolume = aBot.Put975Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==10,
+                                    aBot.Call1000Depth.bidVolume = aBot.Call1000Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put1000Depth.askVolume = aBot.Put1000Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==10.25,
+                                    aBot.Call1025Depth.bidVolume = aBot.Call1025Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put1025Depth.askVolume = aBot.Put1025Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==10.50,
+                                    aBot.Call1050Depth.bidVolume = aBot.Call1050Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put1050Depth.askVolume = aBot.Put1050Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==11,
+                                    aBot.Call1100Depth.bidVolume = aBot.Call1100Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put1100Depth.askVolume = aBot.Put1100Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==12,
+                                    aBot.Call1200Depth.bidVolume = aBot.Call1200Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put1200Depth.askVolume = aBot.Put1200Depth.askVolume-myTradeVolume; 
+                                elseif myStrike==14,
+                                    aBot.Call1400Depth.bidVolume = aBot.Call1400Depth.bidVolume-myTradeVolume;   
+                                    aBot.Put1400Depth.askVolume = aBot.Put1400Depth.askVolume-myTradeVolume; 
+                                end                
+
+
+                                aBot.SendNewOrder(0.01, myTradeVolume,  -1, {myCallDepth.ISIN}, {'IMMEDIATE'}, 0);
+
+                                aBot.SendNewOrder(100, myTradeVolume,  1, {myPutDepth.ISIN}, {'IMMEDIATE'}, 0);
                             end
                         end
                     end

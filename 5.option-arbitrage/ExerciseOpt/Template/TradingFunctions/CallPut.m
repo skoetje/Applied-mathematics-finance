@@ -4,7 +4,7 @@ myStockDepth=aBot.StockDepth;
 myCallDepth=OptionDepth(aBot,aStrike,1);
 myPutDepth=OptionDepth(aBot,aStrike,0);
 myStrike=aStrike;
-myDiscrepancy=0.0001;
+myDiscrepancy=0.03;
 
 % Check emptiness
 if isempty(myStockDepth)==0 && isempty(myCallDepth)==0 && isempty(myPutDepth)==0,
@@ -63,6 +63,7 @@ if isempty(myStockDepth)==0 && isempty(myCallDepth)==0 && isempty(myPutDepth)==0
             end
         end
     end
+    
     % Upper bound
     if isempty(myStockDepth.askVolume)==0 && isempty(myCallDepth.bidVolume)==0 && isempty(myPutDepth.askVolume)==0,
         

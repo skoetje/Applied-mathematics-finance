@@ -2,7 +2,8 @@ classdef TradingRobot < AutoTrader
     properties
         %TradeTimes
         TradeTimes
-        Differences
+        DifferencesU
+        DifferencesL
         PutBuys
         PutSells
         CallSells
@@ -173,7 +174,11 @@ classdef TradingRobot < AutoTrader
             
             % End
             aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+2;
+<<<<<<< HEAD
+            if sum(TimePoint/100 == linspace(0,10000,10001))==1,
+=======
             if sum(TimePoint/100 == linspace(0,100000,100001))==1,
+>>>>>>> 11937dbf7afc2ed19162cd15668de12426af01e1
                 TimePoint
             end
         end
