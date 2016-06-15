@@ -1,0 +1,3 @@
+myTrades=myTradingRobot.ownTrades;
+TradesTime=myTrades.timestamp;
+
