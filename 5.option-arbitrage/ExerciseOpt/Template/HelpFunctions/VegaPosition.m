@@ -20,7 +20,7 @@ for j=0:1,
         myStrike=aStrikeVec(i);
         myOptionDepth=OptionDepth(aBot,myStrike,j);
         myOptionSpot=(myOptionDepth.askLimitPrice(1)+myOptionDepth.bidLimitPrice(1))/2;
-        mySigma=?????????????????????????????????;
+        mySigma=bisection(mySpot,myStrike,myExpiry,myOptionSpot,aIsPut)
         myVega=Vega(mySpot,myStrike,myExpiry,0,mySigma);
                 
         myOptionTrades=find(strcmp(myTrades.ISIN,myOptionDepth.ISIN));
