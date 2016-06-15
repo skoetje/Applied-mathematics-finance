@@ -27,7 +27,7 @@ myPerturbation=[-0.01,0,0.01];
 if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
     if isempty(myOptionDepth.askLimitPrice)==0,
         myCallAskP=myOptionDepth.askLimitPrice;
-        mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myCallAskP,1);
+        mySigma=blsimpv(mySpot0,myStrike,0,myExpiry,myCallAskP);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
             myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,mySigma);
@@ -42,7 +42,7 @@ if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==1,
         myGamma=myGradientVec2(2);
     elseif isempty(myOptionDepth.bidLimitPrice)==0,
         myCallBidP=myOptionDepth.bidLimitPrice;
-        mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myCallBidP,1);
+        mySigma=blsimpv(mySpot0,myStrike,0,myExpiry,myCallBidP);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
             myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,mySigma);
@@ -62,7 +62,7 @@ end
 if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
     if isempty(myOptionDepth.askLimitPrice)==0,
         myPutAskP=myOptionDepth.askLimitPrice;
-        mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myPutAskP,0);
+        mySigma=blsimpv(mySpot0,myStrike,0,myExpiry,myPutAskP);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
             [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,mySigma);
@@ -77,7 +77,7 @@ if isempty(myOptionDepth)==0 && isempty(aBot.StockDepth)==0 && aBoolean==0,
         myGamma=myGradientVec2(2);
     elseif isempty(myOptionDepth.bidLimitPrice)==0,
         myPutBidP=myOptionDepth.bidLimitPrice;
-        mySigma=ImpliedVolatility(mySpot0,myStrike,myExpiry,myPutBidP,0);
+        mySigma=blsimpv(mySpot0,myStrike,0,myExpiry,myPutBidP);
         for i=1:3,
             mySpot=mySpot0+myPerturbation(i);
             [a,myValue1]=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,mySigma);

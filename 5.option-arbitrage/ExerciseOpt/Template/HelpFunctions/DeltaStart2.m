@@ -10,7 +10,7 @@ if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==
         myInterest=0;
         mySpot=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
         myOptionSpot=(myOptionDepth.bidLimitPrice+myOptionDepth.askLimitPrice)/2;
-        myImpVol=ImpliedVolatility(mySpot,myStrike,myExpiry,myOptionSpot,aBoolean);
+        myImpVol=blsimpv(mySpot,myStrike,0,myExpiry,myOptionSpot);
         
         myValue1=BlackScholes(mySpot-0.01,myStrike,myExpiry,myInterest,myImpVol);
         myValue2=BlackScholes(mySpot,myStrike,myExpiry,myInterest,myImpVol);

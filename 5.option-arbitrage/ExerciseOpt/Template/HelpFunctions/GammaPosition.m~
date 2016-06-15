@@ -1,0 +1,28 @@
+function myGammaPosition = GammaPosition(aBot,aStrikeVec)
+
+myTrades=aBot.ownTrades;
+myStockTrades=find(strcmp(myTrades.ISIN,'ING'));
+myStockVolumes=zeros(length(myStockTrades),1);
+
+for i=2:length(myStockTrades),
+    myStockVolumes(i)=myTrades.volume(myStockTrades(i))*myTrades.side(myStockTrades(i));
+end
+
+myStockPosition=sum(myStockVolumes);
+
+
+
+
+myGammaCallPosition=zeros(10,1);
+myGammaPutPosition=zeros(10,1);
+myOptionISINs=GetAllOptionISINs;
+
+for i=1:length(aStrikeVec),
+    myStrike=aStrikeVec(i);
+    myGamma=GammaVector(myStrike);
+    myISIN=myOptionISINs(
+    myGammaCallPosition=
+
+
+
+end

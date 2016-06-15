@@ -49,17 +49,18 @@ classdef TradingRobot < AutoTrader
         TotalStock
         DeltaPositionAft
         DeltaPositionBef
-        PutDeltaVec
-        CallGammaVec
-        PutGammaVec
+        
         StartDeltas
         DeltaConstantG
         Gammas
         myStrikeVec
         
-        
-        Tester1
-        Tester2
+        CallDeltas
+        PutDeltas
+        CallGammas
+        PutGammas
+        CallVegas
+        PutVegas
     end
 
     methods
@@ -110,68 +111,69 @@ classdef TradingRobot < AutoTrader
             if isempty(aBot.StockDepth.bidLimitPrice)==0 && isempty(aBot.StockDepth.askLimitPrice)==0,
                 aBot.SpotHistory(TimePoint)=(aBot.StockDepth.bidLimitPrice(1)+aBot.StockDepth.askLimitPrice(1))/2;
             end
-            aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
+            %myStrikeVector=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
                         
             
             
             
             
             % 1) Delta Hedging  
-%             aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
-%             myInitialAmount=round(1000/length(aBot.myStrikeVec));
-%             aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);     
-%             for i=1:length(aBot.myStrikeVec),
-%                 myStrike=aBot.myStrikeVec(i);
-%                 if isempty(OptionDepth(aBot,myStrike,1))==0;
-%                     myOptionDepth=OptionDepth(aBot,myStrike,1);
-%                     aBot.StartDeltas(TimePoint,i)=DeltaStart(aBot,myStrike,TimePoint,1);
-%                     aBot.DeltaConstantG(TimePoint,i)=NaN;
-%                     %aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
-% 
-%                     if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-%                         if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
-%                             StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
-%                         end
-%                     end
-%                 end
-%             end
-%             aBot.DeltaPositionBef(TimePoint)=0;
-%             aBot.DeltaPositionAft(TimePoint)=0;
-%             if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
-%                 if length(aBot.ownTrades.price)>16,
-%                     for i=1:length(aBot.myStrikeVec),
-%                         myStrike=aBot.myStrikeVec(i);
-%                         aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
-%                     end
-%                     aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-%                     RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
-%                     aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
-%                 end
-%             end
-            
-
-
-
-            % 2) Call-Put Parity
+            aBot.myStrikeVec=[8,9,9.5,9.75,10,10.25,10.5,11,12,14];
+            myInitialAmount=round(1000/length(aBot.myStrikeVec));
+            aBot.DeltaConstantG(TimePoint,:)=zeros(length(aBot.myStrikeVec),1);     
             for i=1:length(aBot.myStrikeVec),
                 myStrike=aBot.myStrikeVec(i);
-                %myStrike=14;
-                %pcBram(aBot,myStrike);
-                %CallPutParityMark(aBot,myStrike,TimePoint);
-                CallPut(aBot,myStrike);
-                Unwind2(aBot,myStrike,TimePoint);
+                if isempty(OptionDepth(aBot,myStrike,1))==0;
+                    myOptionDepth=OptionDepth(aBot,myStrike,1);
+                    aBot.StartDeltas(TimePoint,i)=DeltaStart2(aBot,myStrike,TimePoint,1);
+                    aBot.DeltaConstantG(TimePoint,i)=NaN;
+                    aBot.Gammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+
+                    if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+                        if sum(strcmp(aBot.ownTrades.ISIN,myOptionDepth.ISIN))==0 && length(aBot.ownTrades.price)<=16,
+                            StartHedge2(aBot,TimePoint,myStrike,myInitialAmount,1)
+                        end
+                    end
+                end
+            end
+            aBot.DeltaPositionBef(TimePoint)=0;
+            aBot.DeltaPositionAft(TimePoint)=0;
+            if isempty(aBot.StockDepth.bidVolume)==0 && isempty(aBot.StockDepth.askVolume)==0,
+                if length(aBot.ownTrades.price)>16,
+                    for i=1:length(aBot.myStrikeVec),
+                        myStrike=aBot.myStrikeVec(i);
+                        aBot.DeltaConstantG(TimePoint,i)=Delta_CGamma(aBot,myStrike,1);
+                    end
+                    aBot.DeltaPositionBef(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
+                    RehedgerStocks2(aBot,TimePoint,aBot.myStrikeVec);
+                    aBot.DeltaPositionAft(TimePoint)=DeltaPosition(aBot,aBot.myStrikeVec);
+                end
             end
             
-                        
-            % 3) Unwinding
-            %Unwind(aBot,TimePoint);
+            for i=1:10
+                myStrike=myStrikeVector(i);
+                aBot.CallDeltas(TimePoint,i)=DeltaStart2(aBot,myStrike,TimePoint,1);
+                aBot.CallGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,1);
+                aBot.CallVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,1);
+                aBot.PutDeltas(TimePoint,i)=DeltaStart2(aBot,myStrike,TimePoint,0);
+                aBot.PutGammas(TimePoint,i)=Gamma(aBot,myStrike,TimePoint,0);
+                aBot.PutVegas(TimePoint,i)=Vega_disc(aBot,myStrike,TimePoint,0);
+            end
+
+
+            % 2) Call-Put Parity, 3) Unwinding
+%             for i=1:length(aBot.myStrikeVec),
+%                 myStrike=aBot.myStrikeVec(i);
+%                 CallPut(aBot,myStrike);
+%                 %Unwind2(aBot,myStrike,TimePoint);
+%             end
             
             
             
             
             % End
             aBot.Time(length(aBot.Time)+1)=length(aBot.Time)+2;
-            if sum(TimePoint/100 == linspace(0,1000,1001))==1,
+            if sum(TimePoint/100 == linspace(0,100000,100001))==1,
                 TimePoint
             end
         end
