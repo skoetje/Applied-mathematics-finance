@@ -1,14 +1,14 @@
-function Volatility=bisection(aSpot,aStrike,aTime,aOption,aIsPut)
+function Volatility=bisection(aSpot,aStrike,myExpiry,aOption,aIsPut)
 
-threshold = 1e-6
+threshold = 1e-6;
 lowVol = 0.001;
 upVol = 1;
 
 while upVol - lowVol >= threshold,
     midVol = (lowVol+upVol)/2;
     [callM, putM] = BlackScholes(aSpot,aStrike,myExpiry,0,midVol);
-    [callL, putL] = BlackScholes(aSpot,aStrike,myExpiry,0,lowVol;
-    if aIsput == 1,
+    [callL, putL] = BlackScholes(aSpot,aStrike,myExpiry,0,lowVol);
+    if aIsPut == 1,
         valueM = callM;
         valueL = callL;
     else
@@ -16,7 +16,7 @@ while upVol - lowVol >= threshold,
         valueL = putL;
     end
     if abs(valueM)-aOption >= threshold,
-    Volatility= midvol;
+    Volatility= midVol;
     return
     elseif ((valueL-aOption)* (valueM-aOption))<0,
     upVol = midVol;
