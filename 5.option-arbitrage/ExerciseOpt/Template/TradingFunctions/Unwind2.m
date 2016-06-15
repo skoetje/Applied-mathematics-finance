@@ -1,6 +1,9 @@
 function Unwind2(aBot,aStrike,aTime)
 
-myThreshold=10000;
+myFeedLength=3300;
+myThreshold=myFeedLength*0.8;
+
+
 
 % Time check
 if aTime>myThreshold,
